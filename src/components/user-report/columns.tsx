@@ -44,5 +44,6 @@ export const userReportColumns: ColumnDef<UserReport>[] = [
         </DropdownMenu>
       )
     },
+    filterFn: 'equalsString',
   },
 ]
