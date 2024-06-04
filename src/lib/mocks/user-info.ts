@@ -4,7 +4,7 @@ export const userInfo: UserInfo[] = [
   {
     id: 'test1',
     email: 'dominico1225@gmail.com',
-    privilege: 'CREATOR',
+    userRole: 'CREATOR',
     age: 25,
     gender: 'M',
     status: 'ACTIVATED',
@@ -18,7 +18,7 @@ export const userInfo: UserInfo[] = [
   {
     id: 'test2',
     email: 'dominico1225@korea.ac.kr',
-    privilege: 'USER',
+    userRole: 'USER',
     age: 25,
     gender: 'M',
     status: 'DEACTIVATED',
@@ -32,7 +32,7 @@ export const userInfo: UserInfo[] = [
   {
     id: 'test3',
     email: 'test3@gmail.com',
-    privilege: 'USER',
+    userRole: 'USER',
     age: 25,
     gender: 'F',
     status: 'ACTIVATED',
@@ -46,7 +46,7 @@ export const userInfo: UserInfo[] = [
   {
     id: 'test4',
     email: 'test4@gmail.com',
-    privilege: 'CREATOR',
+    userRole: 'CREATOR',
     age: 22,
     gender: 'F',
     status: 'DEACTIVATED',
@@ -60,7 +60,7 @@ export const userInfo: UserInfo[] = [
   {
     id: 'test5',
     email: 'test5@gmail.com',
-    privilege: 'USER',
+    userRole: 'USER',
     age: 25,
     gender: 'F',
     status: 'ACTIVATED',
@@ -74,7 +74,7 @@ export const userInfo: UserInfo[] = [
   {
     id: 'test6',
     email: 'test6@gmail.com',
-    privilege: 'USER',
+    userRole: 'USER',
     age: 25,
     gender: 'F',
     status: 'ACTIVATED',
@@ -88,7 +88,7 @@ export const userInfo: UserInfo[] = [
   {
     id: 'test7',
     email: 'test7@gmail.com',
-    privilege: 'USER',
+    userRole: 'USER',
     age: 25,
     gender: 'F',
     status: 'ACTIVATED',
@@ -102,7 +102,7 @@ export const userInfo: UserInfo[] = [
   {
     id: 'test8',
     email: 'test8@gmail.com',
-    privilege: 'USER',
+    userRole: 'USER',
     age: 20,
     gender: 'M',
     status: 'ACTIVATED',
@@ -116,7 +116,7 @@ export const userInfo: UserInfo[] = [
   {
     id: 'test9',
     email: 'test9@gmail.com',
-    privilege: 'USER',
+    userRole: 'USER',
     age: 25,
     gender: 'F',
     status: 'ACTIVATED',
@@ -130,7 +130,7 @@ export const userInfo: UserInfo[] = [
   {
     id: 'test10',
     email: 'test10@gmail.com',
-    privilege: 'USER',
+    userRole: 'USER',
     age: 25,
     gender: 'M',
     status: 'ACTIVATED',
@@ -144,7 +144,7 @@ export const userInfo: UserInfo[] = [
   {
     id: 'test11',
     email: 'test11@gmail.com',
-    privilege: 'USER',
+    userRole: 'USER',
     age: 25,
     gender: 'F',
     status: 'ACTIVATED',

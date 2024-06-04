@@ -1,14 +1,24 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useRoutes } from 'react-router-dom'
 
 import { ThemeProvider } from '@/components/theme-provider'
 import routes from '@/router'
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+})
 function App() {
   const route = useRoutes(routes)
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      {route}
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        {route}
+      </ThemeProvider>
+    </QueryClientProvider>
   )
 }
 

@@ -1,12 +1,35 @@
-import { userColumns } from '@/components/user-info/columns'
+import { useCallback, useMemo } from 'react'
+
+import { useGetUserInfoList, usePostUserStatus } from '@/api/hooks/user-info'
+import { getUserColumns } from '@/components/user-info/columns'
 import { DataTable } from '@/components/user-info/data-table'
 import { userInfo } from '@/lib/mocks/user-info'
+import { UserRole, UserStatus } from '@/types/user-info'
 
 const UserInfoPage = () => {
+  const { data: userInfoList, isFetching } = useGetUserInfoList()
+
+  const { mutate: mutateUserStatus } = usePostUserStatus()
+
+  const handleUserStatus = useCallback(
+    (id: string, status: UserStatus) => {
+      mutateUserStatus({ id, status })
+    },
+    [mutateUserStatus],
+  )
+  const handleUserRole = useCallback((id: string, userRole: UserRole) => {
+    console.log(id, userRole)
+  }, [])
+
+  const columns = useMemo(
+    () => getUserColumns({ handleUserStatus, handleUserRole: handleUserRole }),
+    [handleUserRole, handleUserStatus],
+  )
+
   return (
     <div className="container py-10 mx-auto">
       <h1 className="mb-5 text-2xl font-semibold">User Info</h1>
-      <DataTable columns={userColumns} data={userInfo} />
+      <DataTable columns={columns} data={userInfo} isFetching={isFetching} />
     </div>
   )
 }

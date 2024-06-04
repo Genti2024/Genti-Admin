@@ -3,26 +3,34 @@ import { ChevronDown } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { UserInfo } from '@/types/user-info'
+import { UserInfo, UserRole, UserStatus } from '@/types/user-info'
 
-export const userColumns: ColumnDef<UserInfo>[] = [
+interface UserInfoColumnsProps {
+  handleUserStatus: (id: string, status: UserStatus) => void
+  handleUserRole: (id: string, userRole: UserRole) => void
+}
+export const getUserColumns = ({
+  handleUserRole: handleUserRole,
+  handleUserStatus,
+}: UserInfoColumnsProps): ColumnDef<UserInfo>[] => [
   { accessorKey: 'email', header: 'e-mail' },
   {
-    accessorKey: 'privilege',
+    accessorKey: 'userRole',
     header: '권한',
     cell: ({ row }) => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button>
-            <Badge variant="secondary">{row.getValue('privilege') === 'CREATOR' ? '공급자' : '사용자'}</Badge>
+            <Badge variant="secondary">{row.getValue('userRole') === 'CREATOR' ? '공급자' : '사용자'}</Badge>
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => {}}>공급자</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => {}}>사용자</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleUserRole(row.original.id, 'CREATOR')}>공급자</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleUserRole(row.original.id, 'USER')}>사용자</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),
+    filterFn: 'equalsString',
   },
   { accessorKey: 'age', header: '나이' },
   { accessorKey: 'gender', header: '성별' },
@@ -30,7 +38,7 @@ export const userColumns: ColumnDef<UserInfo>[] = [
     accessorKey: 'status',
     header: '상태',
     cell: ({ row }) => {
-      const status = row.getValue('status') as 'ACTIVATED' | 'DEACTIVATED'
+      const status = row.getValue('status') as UserStatus
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -42,8 +50,10 @@ export const userColumns: ColumnDef<UserInfo>[] = [
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => {}}>활성화</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => {}}>비활성화</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleUserStatus(row.original.id, 'ACTIVATED')}>활성화</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleUserStatus(row.original.id, 'DEACTIVATED')}>
+              비활성화
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
