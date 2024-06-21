@@ -11,8 +11,7 @@ const headerConfig = [
   { to: '/user/info', label: 'User Info' },
   { to: '/user/report', label: 'User Report' },
   { to: '/cache', label: 'Cache' },
-  { to: '/upload/photo', label: 'Upload Photo' },
-  { to: '/upload/order', label: 'Upload Order&Photo' },
+  { to: '/upload/preset', label: 'Upload Preset' },
 ]
 const Header = () => {
   const location = useLocation().pathname
