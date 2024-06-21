@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { ChevronDown, Download } from 'lucide-react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -55,7 +56,14 @@ export const producerOrderColumns: ColumnDef<ProducerOrder>[] = [
     cell: ({ row }) => {
       const prompt = row.getValue('prompt') as string
       return (
-        <CopyToClipboard text={prompt}>
+        <CopyToClipboard
+          text={prompt}
+          onCopy={() => {
+            toast('프롬프트 복사가 완료 되었습니다.', {
+              description: prompt.length > 20 ? prompt.slice(0, 20) + '...' : prompt,
+            })
+          }}
+        >
           <p className="truncate cursor-pointer w-[150px] h-[20px]">{prompt}</p>
         </CopyToClipboard>
       )
