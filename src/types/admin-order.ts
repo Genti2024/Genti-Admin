@@ -10,7 +10,7 @@ export type AdminOrder = {
   prompt: string
   examplePic: string
   userPic: string[]
-  status: Status
+  orderStatus: Status
   assigned: string
   uploadedpic: string
 }

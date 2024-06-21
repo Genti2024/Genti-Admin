@@ -1,10 +1,13 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Download } from 'lucide-react'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { AdminOrder } from '@/types/admin-order'
+import { downloadFile } from '@/util/download'
 
 /*
 id: '',
@@ -22,6 +25,25 @@ id: '',
     */
 
 export const adminOrderColumns: ColumnDef<AdminOrder>[] = [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+        onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={value => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: 'orderedAt',
     header: '주문 일시',
@@ -41,9 +63,33 @@ export const adminOrderColumns: ColumnDef<AdminOrder>[] = [
   {
     accessorKey: 'prompt',
     header: '추천 프롬프트',
+    cell: ({ row }) => {
+      const prompt = row.getValue('prompt') as string
+      return (
+        <CopyToClipboard text={prompt}>
+          <p className="truncate cursor-pointer w-[150px] h-[20px]">{prompt}</p>
+        </CopyToClipboard>
+      )
+    },
   },
   { accessorKey: 'examplePic', header: '구도 참고 사진' },
-  { accessorKey: 'userPic', header: '사용자 사진' },
+  {
+    accessorKey: 'userPic',
+    header: '사용자 사진',
+    cell: ({ row }) => {
+      const userPic = row.getValue('userPic') as string[]
+      const handlePicDownload = () => {
+        userPic.map((pic, index) => {
+          downloadFile(pic, `userPic${index}`)
+        })
+      }
+      return (
+        <Button variant="outline" size="default" onClick={handlePicDownload}>
+          <Download className="w-4 h-4" />
+        </Button>
+      )
+    },
+  },
 
   {
     accessorKey: 'orderStatus',
@@ -74,7 +120,6 @@ export const adminOrderColumns: ColumnDef<AdminOrder>[] = [
   {
     accessorKey: 'assigned',
     header: '담당자',
-    cell: () => <input value={''} />,
   },
   {
     id: 'uploadpic',

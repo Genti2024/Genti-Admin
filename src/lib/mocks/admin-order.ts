@@ -8,9 +8,14 @@ export const adminOrder: AdminOrder[] = [
     userEmail: 'test@naver.com',
     userGender: 'M',
     content: '주문 내용입니다',
-    prompt: '추천 프롬프트입니다',
+    prompt:
+      '아름다운 가을 풍경 속에서 호기심 어린 아이가 낙엽을 살펴보며 걸어가고 있다. 따스한 햇살이 비치고 있고, 주변에는 다양한 색감의 단풍들이 보인다. 아이의 모습에서 순수함과 호기심이 느껴진다.',
     examplePic: 'examplePicLink',
-    userPic: ['userPic1', 'userPic2', 'userPic3'],
+    userPic: [
+      'https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80',
+      'https://images.unsplash.com/profile-1446404465118-3a53b909cc82?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&cs=tinysrgb&fit=crop&h=64&w=64&s=3ef46b07bb19f68322d027cb8f9ac99f',
+      'https://images.unsplash.com/profile-1446404465118-3a53b909cc82?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&cs=tinysrgb&fit=crop&h=128&w=128&s=27a346c2362207494baa7b76f5d606e5',
+    ],
     orderStatus: 'ONGOING',
     assigned: '담당자입니다.',
     uploadedpic: 'uploadedPic',
