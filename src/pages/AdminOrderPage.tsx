@@ -4,7 +4,7 @@ import { adminOrder } from '@/lib/mocks/admin-order'
 
 const AdminOrderPage = () => {
   return (
-    <div className="container py-10 mx-auto">
+    <div className="px-20 py-10 mx-auto min-[2000px]:max-w-[80%]">
       <h1 className="mb-5 text-2xl font-semibold">Admin Order</h1>
       <DataTable columns={adminOrderColumns} data={adminOrder} />
     </div>
