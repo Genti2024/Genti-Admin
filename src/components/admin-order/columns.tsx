@@ -25,7 +25,7 @@ id: '',
     uploadedpic: 'uploadedPic',
     */
 
-export const adminOrderColumns: ColumnDef<AdminOrder>[] = [
+export const adminOrderColumns = (): ColumnDef<AdminOrder>[] => [
   {
     id: 'select',
     header: ({ table }) => (
@@ -129,21 +129,12 @@ export const adminOrderColumns: ColumnDef<AdminOrder>[] = [
     header: '담당자',
   },
   {
-    id: 'uploadpic',
+    id: 'uploadPic',
     header: '사진업로드',
-    cell: () => (
-      <Button variant="outline" size="default" onClick={() => {}}>
-        업로드
-      </Button>
-    ),
   },
+  { id: 'checkPic', header: '사진확인' },
   {
-    id: 'sendpic',
+    id: 'sendPic',
     header: '사진전송',
-    cell: () => (
-      <Button variant="default" size="default" onClick={() => {}}>
-        전송
-      </Button>
-    ),
   },
 ]

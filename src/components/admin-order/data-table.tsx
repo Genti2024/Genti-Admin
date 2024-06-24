@@ -8,7 +8,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { ListFilter, Pencil } from 'lucide-react'
-import { useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -32,6 +32,9 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
+  const files = useRef<null[] | HTMLInputElement[]>([])
+  const [btnDisabled, setBtnDisabled] = useState<boolean[]>(new Array(data.length).fill(true))
   const table = useReactTable({
     data,
     columns,
@@ -47,6 +50,14 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   const handleStatusFilter = (value: string) => {
     table.getColumn('orderStatus')?.setFilterValue(value)
   }
+
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, rowIndex: number) => {
+    if (e.target.files?.length) {
+      setBtnDisabled(prev => prev.map((item, i) => (i === rowIndex ? false : item)))
+    } else {
+      setBtnDisabled(prev => prev.map((item, i) => (i === rowIndex ? true : item)))
+    }
+  }, [])
   return (
     <div>
       <div className="flex flex-row items-center gap-4">
@@ -118,9 +129,70 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map(row => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                  {row.getVisibleCells().map(cell => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                  ))}
+                  {row.getVisibleCells().map(cell => {
+                    if (cell.column.columnDef.id === 'uploadPic') {
+                      return (
+                        <TableCell key={cell.id}>
+                          <div>
+                            <Button
+                              variant="outline"
+                              size="default"
+                              onClick={() => files.current[cell.row.index]?.click()}
+                            >
+                              업로드
+                            </Button>
+                            <Input
+                              type="file"
+                              className="hidden"
+                              ref={el => (files.current[cell.row.index] = el)}
+                              accept="image/*"
+                              onChange={e => handleFileChange(e, cell.row.index)}
+                            />
+                          </div>
+                        </TableCell>
+                      )
+                    }
+                    if (cell.column.columnDef.id === 'checkPic') {
+                      return (
+                        <TableCell key={cell.id}>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button variant="outline" disabled={btnDisabled[cell.row.index]}>
+                                사진 확인
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[425px]">
+                              <DialogHeader>
+                                <DialogTitle>사진 확인</DialogTitle>
+                                <DialogDescription></DialogDescription>
+                              </DialogHeader>
+                              <div className="grid gap-4 py-4">
+                                <div className="grid items-center grid-cols-4 gap-4">
+                                  <Label htmlFor="name" className="text-right">
+                                    이름
+                                  </Label>
+                                  <Input id="name" defaultValue="익명의 담당자" className="col-span-3" />
+                                </div>
+                              </div>
+                              <DialogFooter>
+                                <Button type="submit">Save changes</Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                        </TableCell>
+                      )
+                    }
+                    if (cell.column.columnDef.id === 'sendPic') {
+                      return (
+                        <TableCell key={cell.id}>
+                          <Button onClick={() => console.log(files.current[cell.row.index].files[0])}>전송</Button>
+                        </TableCell>
+                      )
+                    }
+                    return (
+                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    )
+                  })}
                 </TableRow>
               ))
             ) : (
