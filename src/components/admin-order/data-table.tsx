@@ -8,7 +8,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { ListFilter, Pencil } from 'lucide-react'
-import { useCallback, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -24,6 +24,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useFiles } from '@/util/useFiles'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -33,8 +34,9 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
-  const files = useRef<null[] | HTMLInputElement[]>([])
-  const [btnDisabled, setBtnDisabled] = useState<boolean[]>(new Array(data.length).fill(true))
+  const filesRef = useRef<(null | HTMLInputElement)[]>([])
+  const { handleFileUpload, handleFileInput, handleFileChange, currentFiles, preview, btnDisabled, handleFileDelete } =
+    useFiles(filesRef, data.length)
   const table = useReactTable({
     data,
     columns,
@@ -51,13 +53,6 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     table.getColumn('orderStatus')?.setFilterValue(value)
   }
 
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, rowIndex: number) => {
-    if (e.target.files?.length) {
-      setBtnDisabled(prev => prev.map((item, i) => (i === rowIndex ? false : item)))
-    } else {
-      setBtnDisabled(prev => prev.map((item, i) => (i === rowIndex ? true : item)))
-    }
-  }, [])
   return (
     <div>
       <div className="flex flex-row items-center gap-4">
@@ -134,17 +129,13 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                       return (
                         <TableCell key={cell.id}>
                           <div>
-                            <Button
-                              variant="outline"
-                              size="default"
-                              onClick={() => files.current[cell.row.index]?.click()}
-                            >
+                            <Button variant="outline" size="default" onClick={() => handleFileInput(cell.row.index)}>
                               업로드
                             </Button>
                             <Input
                               type="file"
                               className="hidden"
-                              ref={el => (files.current[cell.row.index] = el)}
+                              ref={el => (currentFiles[cell.row.index] = el as HTMLInputElement)}
                               accept="image/*"
                               onChange={e => handleFileChange(e, cell.row.index)}
                             />
@@ -157,25 +148,36 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                         <TableCell key={cell.id}>
                           <Dialog>
                             <DialogTrigger asChild>
-                              <Button variant="outline" disabled={btnDisabled[cell.row.index]}>
+                              <Button
+                                variant="outline"
+                                disabled={btnDisabled[cell.row.index]}
+                                onClick={() => handleFileUpload(cell.row.index)}
+                              >
                                 사진 확인
                               </Button>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-[425px]">
                               <DialogHeader>
-                                <DialogTitle>사진 확인</DialogTitle>
-                                <DialogDescription></DialogDescription>
+                                <DialogTitle className="mb-5">사진 확인</DialogTitle>
+                                <DialogDescription>
+                                  {preview[cell.row.index] === '' ? (
+                                    <div className="flex items-center justify-center w-full bg-gray-100 rounded-md h-96">
+                                      <p>이미지가 없습니다.</p>
+                                    </div>
+                                  ) : (
+                                    <img
+                                      src={preview[cell.row.index]}
+                                      alt="preview"
+                                      className="object-cover w-full rounded-md h-96"
+                                    />
+                                  )}
+                                </DialogDescription>
                               </DialogHeader>
-                              <div className="grid gap-4 py-4">
-                                <div className="grid items-center grid-cols-4 gap-4">
-                                  <Label htmlFor="name" className="text-right">
-                                    이름
-                                  </Label>
-                                  <Input id="name" defaultValue="익명의 담당자" className="col-span-3" />
-                                </div>
-                              </div>
+                              <div className="grid gap-4 py-4"></div>
                               <DialogFooter>
-                                <Button type="submit">Save changes</Button>
+                                <Button type="submit" onClick={() => handleFileDelete(cell.row.index)}>
+                                  삭제하기
+                                </Button>
                               </DialogFooter>
                             </DialogContent>
                           </Dialog>
@@ -185,7 +187,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                     if (cell.column.columnDef.id === 'sendPic') {
                       return (
                         <TableCell key={cell.id}>
-                          <Button onClick={() => console.log(files.current[cell.row.index].files[0])}>전송</Button>
+                          <Button onClick={() => console.log(preview)}>전송</Button>
                         </TableCell>
                       )
                     }
