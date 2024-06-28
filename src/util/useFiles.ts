@@ -17,7 +17,6 @@ export const useFiles = (filesRef: React.MutableRefObject<(HTMLInputElement | nu
   const handleFileUpload = useCallback(
     (index: number) => {
       // 미리보기가 존재하면 return
-      if (preview[index] !== '') return
       const img = currentFile(index)[0]
       const reader = new FileReader()
       reader.readAsDataURL(img)
@@ -29,7 +28,7 @@ export const useFiles = (filesRef: React.MutableRefObject<(HTMLInputElement | nu
         })
       }
     },
-    [currentFile, preview],
+    [currentFile],
   )
 
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, rowIndex: number) => {
