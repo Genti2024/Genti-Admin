@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { ChevronDown, Download } from 'lucide-react'
+import { ChevronDown, Download, FileImage } from 'lucide-react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { toast } from 'sonner'
 
@@ -48,11 +48,11 @@ export const adminOrderColumns = (): ColumnDef<AdminOrder>[] => [
   {
     accessorKey: 'orderedAt',
     header: '주문 일시',
-    // cell: ({ row }) => {
-    //   const date = row.getValue('reportAt') as Date
-    //   const formatted = new Intl.DateTimeFormat('ko-KR').format(date)
-    //   return <div>{formatted}</div>
-    // },
+    cell: ({ row }) => {
+      const date = row.getValue('orderedAt') as Date
+      const formatted = new Date(date).toISOString().slice(0, 19).replace('T', ' ')
+      return <div>{formatted}</div>
+    },
   },
   {
     accessorKey: 'orderNum',
@@ -60,7 +60,17 @@ export const adminOrderColumns = (): ColumnDef<AdminOrder>[] => [
   },
   { accessorKey: 'userEmail', header: 'email' },
   { accessorKey: 'userGender', header: '성별' },
-  { accessorKey: 'content', header: '주문 내용' },
+  {
+    accessorKey: 'content',
+    header: '주문 내용',
+    cell: ({ row }) => {
+      return (
+        <div>
+          <p className="w-[200px]">{row.getValue('content')}</p>
+        </div>
+      )
+    },
+  },
   {
     accessorKey: 'prompt',
     header: '추천 프롬프트',
@@ -80,7 +90,18 @@ export const adminOrderColumns = (): ColumnDef<AdminOrder>[] => [
       )
     },
   },
-  { accessorKey: 'examplePic', header: '구도 참고 사진' },
+  {
+    accessorKey: 'examplePic',
+    header: '구도 참고 사진',
+    cell: ({ row }) => {
+      const url = row.getValue('examplePic') as string
+      return (
+        <Button variant="outline" size="default" onClick={() => window.open(url)}>
+          <FileImage className="w-4 h-4" />
+        </Button>
+      )
+    },
+  },
   {
     accessorKey: 'userPic',
     header: '사용자 사진',

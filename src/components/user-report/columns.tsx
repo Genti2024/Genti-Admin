@@ -1,7 +1,8 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, FileImage } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { UserReport } from '@/types/user-report'
 
@@ -20,7 +21,18 @@ export const userReportColumns: ColumnDef<UserReport>[] = [
     header: '사용자 ID',
   },
   { accessorKey: 'creatorEmail', header: '공급자 ID' },
-  { accessorKey: 'pictureGenerateResponseId', header: '사진' },
+  {
+    accessorKey: 'picture',
+    header: '사용자에게 전달된 사진',
+    cell: ({ row }) => {
+      const url = row.getValue('picture') as string
+      return (
+        <Button variant="outline" size="default" onClick={() => window.open(url)}>
+          <FileImage className="w-4 h-4" />
+        </Button>
+      )
+    },
+  },
   { accessorKey: 'content', header: 'Report 내용' },
   {
     accessorKey: 'reportStatus',

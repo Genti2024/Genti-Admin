@@ -4,14 +4,7 @@ import { ChevronDown } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { CacheOut } from '@/types/cache-out'
-// id: '',
-//     producerEmail: 'produce@naver.com',
-//     account: '3010101010101',
-//     bankName: '농협',
-//     accountHolder: '홍길동',
-//     cacheAmount: 30000,
-//     producedNum: 4,
-//     cacheOutStatus: 'NOT STARTED',
+
 export const cacheOutColumns: ColumnDef<CacheOut>[] = [
   {
     accessorKey: 'producerEmail',

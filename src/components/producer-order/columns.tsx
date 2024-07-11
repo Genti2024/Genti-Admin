@@ -32,11 +32,11 @@ export const producerOrderColumns: ColumnDef<ProducerOrder>[] = [
   {
     accessorKey: 'orderedAt',
     header: '주문 일시',
-    // cell: ({ row }) => {
-    //   const date = row.getValue('reportAt') as Date
-    //   const formatted = new Intl.DateTimeFormat('ko-KR').format(date)
-    //   return <div>{formatted}</div>
-    // },
+    cell: ({ row }) => {
+      const date = row.getValue('orderedAt') as Date
+      const formatted = new Date(date).toISOString().slice(0, 19).replace('T', ' ')
+      return <div>{formatted}</div>
+    },
   },
   {
     accessorKey: 'orderNum',
@@ -45,6 +45,11 @@ export const producerOrderColumns: ColumnDef<ProducerOrder>[] = [
   {
     accessorKey: 'sendedAt',
     header: '전달일시',
+    cell: ({ row }) => {
+      const date = row.getValue('sendedAt') as Date
+      const formatted = new Date(date).toISOString().slice(0, 19).replace('T', ' ')
+      return <div>{formatted}</div>
+    },
   },
   { accessorKey: 'userEmail', header: 'email' },
   { accessorKey: 'userGender', header: '성별' },
