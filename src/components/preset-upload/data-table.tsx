@@ -2,8 +2,18 @@ import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReact
 import { useCallback, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useFiles } from '@/util/useFiles'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -11,16 +21,9 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
-  const files = useRef<null | HTMLInputElement>()
-  const [btnDisabled, setBtnDisabled] = useState<boolean>(true)
-
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.length) {
-      setBtnDisabled(false)
-    } else {
-      setBtnDisabled(true)
-    }
-  }, [])
+  const filesRef = useRef<(null | HTMLInputElement)[]>([])
+  const { handleFileUpload, handleFileInput, handleFileChange, currentFiles, preview, btnDisabled, handleFileDelete } =
+    useFiles(filesRef, data.length)
 
   const table = useReactTable({
     data,
@@ -37,21 +40,45 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   return (
     <div>
       <div className="flex flex-row items-center gap-4 py-2">
-        <div className="flex items-center border rounded-md w-full p-2">
-          <Input placeholder="주문을 입력하세요..." defaultValue="" className="mr-4" />
-          <Button variant="outline" size="default" className="mr-4" onClick={() => files.current?.click()}>
+        <div className="flex items-center w-full gap-4 p-2 border rounded-md">
+          <Input placeholder="주문을 입력하세요..." defaultValue="" />
+          <Button variant="outline" size="default" onClick={() => handleFileInput(0)}>
             사진 업로드
           </Button>
           <Input
             type="file"
             className="hidden"
-            ref={el => (files.current = el)}
+            ref={el => (currentFiles[0] = el as HTMLInputElement)}
             accept="image/*"
-            onChange={e => handleFileChange(e)}
+            onChange={e => handleFileChange(e, 0)}
           />
-          <Button variant="outline" className="mr-4" disabled={btnDisabled} onClick={() => window.open(``)}>
-            사진 확인
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" disabled={btnDisabled[0]} onClick={() => handleFileUpload(0)}>
+                사진 확인
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle className="mb-5">사진 확인</DialogTitle>
+                <DialogDescription>
+                  {preview[0] === '' ? (
+                    <div className="flex items-center justify-center w-full bg-gray-100 rounded-md h-96">
+                      <p>이미지가 없습니다.</p>
+                    </div>
+                  ) : (
+                    <img src={preview[0]} alt="preview" className="object-cover w-full rounded-md h-96" />
+                  )}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4"></div>
+              <DialogFooter>
+                <Button type="submit" onClick={() => handleFileDelete(0)}>
+                  삭제하기
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <Button type="submit">저장</Button>
         </div>
       </div>
