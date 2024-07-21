@@ -1,13 +1,5 @@
 type Gender = 'M' | 'F'
-export type Status =
-  | 'CREATED'
-  | 'ASSIGNING'
-  | 'IN_PROGRESS'
-  | 'CANCELED'
-  | 'REPORTED'
-  | 'MATCH_TO_ADMIN'
-  | 'AWAIT_USER_VERIFICATION'
-  | 'COMPLETED'
+export type Status = 'ASSIGNING' | 'IN_PROGRESS' | 'COMPLETED'
 
 type PictureRatio = 'RATIO_3_2' | 'NONE' | 'RATIO_2_3'
 type PictureType =

@@ -48,8 +48,6 @@ export const adminOrderColumns = (): ColumnDef<AdminOrder>[] => [
   },
   { accessorKey: 'requesterEmail', header: 'email' },
   { accessorKey: 'userGender', header: '성별' },
-  { accessorKey: 'shotCoverage', header: '프레임' },
-  { accessorKey: 'cameraAngle', header: '카메라 앵글' },
   {
     accessorKey: 'prompt',
     header: '주문 내용',
@@ -122,12 +120,36 @@ export const adminOrderColumns = (): ColumnDef<AdminOrder>[] => [
     header: '상태',
     cell: ({ row }) => {
       const status = row.getValue('requestStatus') as Status
+      const statusKR = () => {
+        switch (status) {
+          case 'ASSIGNING':
+            return '작업대기'
+          case 'IN_PROGRESS':
+            return '작업 중'
+          case 'COMPLETED':
+            return '작업완료'
+          default:
+            return '작업대기'
+        }
+      }
+      const handleStatusVariant = () => {
+        switch (status) {
+          case 'ASSIGNING':
+            return 'destructive'
+          case 'IN_PROGRESS':
+            return 'outline'
+          case 'COMPLETED':
+            return 'default'
+          default:
+            return 'outline'
+        }
+      }
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button>
-              <Badge>
-                {status}
+              <Badge variant={handleStatusVariant()}>
+                {statusKR()}
                 <ChevronDown className="w-4 h-4 ml-2" />
               </Badge>
             </button>

@@ -8,7 +8,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { ListFilter, Pencil } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -53,6 +53,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     table.getColumn('requestStatus')?.setFilterValue(value)
   }
 
+  console.log(data.length)
   return (
     <div>
       <div className="flex flex-row items-center gap-4">
