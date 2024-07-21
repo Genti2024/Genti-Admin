@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { ChevronDown, Download, FileImage } from 'lucide-react'
+import { ChevronDown, Download } from 'lucide-react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { toast } from 'sonner'
 
@@ -7,23 +7,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { AdminOrder } from '@/types/admin-order'
+import { AdminOrder, FacePictureList, PosePicture, Status } from '@/types/admin-order'
 import { downloadFile } from '@/util/download'
-
-/*
-id: '',
-    orderedAt: '',
-    orderNum: 'A1',
-    userEmail: 'test@naver.com',
-    userGender: 'M',
-    content: '주문 내용입니다',
-    prompt: '추천 프롬프트입니다',
-    examplePic: 'examplePicLink',
-    userPic: ['userPic1', 'userPic2', 'userPic3'],
-    status: 'ONGOING',
-    assigned: '담당자입니다.',
-    uploadedpic: 'uploadedPic',
-    */
 
 export const adminOrderColumns = (): ColumnDef<AdminOrder>[] => [
   {
@@ -46,36 +31,41 @@ export const adminOrderColumns = (): ColumnDef<AdminOrder>[] => [
     enableHiding: false,
   },
   {
-    accessorKey: 'orderedAt',
+    accessorKey: 'createdAt',
     header: '주문 일시',
     cell: ({ row }) => {
-      const date = row.getValue('orderedAt') as Date
+      const date = row.getValue('createdAt') as Date
       const formatted = new Date(date).toISOString().slice(0, 19).replace('T', ' ')
       return <div>{formatted}</div>
     },
   },
   {
-    accessorKey: 'orderNum',
+    accessorKey: 'pictureGenerateRequestId',
     header: '주문넘버',
+    cell: ({ row }) => {
+      return <div>A{row.getValue('pictureGenerateRequestId')}</div>
+    },
   },
-  { accessorKey: 'userEmail', header: 'email' },
+  { accessorKey: 'requesterEmail', header: 'email' },
   { accessorKey: 'userGender', header: '성별' },
+  { accessorKey: 'shotCoverage', header: '프레임' },
+  { accessorKey: 'cameraAngle', header: '카메라 앵글' },
   {
-    accessorKey: 'content',
+    accessorKey: 'prompt',
     header: '주문 내용',
     cell: ({ row }) => {
       return (
         <div>
-          <p className="w-[200px]">{row.getValue('content')}</p>
+          <p className="w-[100px] whitespace-pre-wrap">{row.getValue('prompt')}</p>
         </div>
       )
     },
   },
   {
-    accessorKey: 'prompt',
+    accessorKey: 'promptAdvanced',
     header: '추천 프롬프트',
     cell: ({ row }) => {
-      const prompt = row.getValue('prompt') as string
+      const prompt = row.getValue('promptAdvanced') as string
       return (
         <CopyToClipboard
           text={prompt}
@@ -91,29 +81,36 @@ export const adminOrderColumns = (): ColumnDef<AdminOrder>[] => [
     },
   },
   {
-    accessorKey: 'examplePic',
+    accessorKey: 'posePicture',
     header: '구도 참고 사진',
     cell: ({ row }) => {
-      const url = row.getValue('examplePic') as string
+      const userPic = row.getValue('posePicture') as PosePicture[] | null
+      const handlePicDownload = () => {
+        if (!userPic) return
+        userPic.map(pic => {
+          downloadFile(pic.url, pic.key.split('.png')[0])
+        })
+      }
       return (
-        <Button variant="outline" size="default" onClick={() => window.open(url)}>
-          <FileImage className="w-4 h-4" />
+        <Button variant="outline" size="default" onClick={handlePicDownload} disabled={!userPic}>
+          <Download className="w-4 h-4" />
         </Button>
       )
     },
   },
   {
-    accessorKey: 'userPic',
+    accessorKey: 'facePictureList',
     header: '사용자 사진',
     cell: ({ row }) => {
-      const userPic = row.getValue('userPic') as string[]
+      const userPic = row.getValue('facePictureList') as FacePictureList[] | null
       const handlePicDownload = () => {
-        userPic.map((pic, index) => {
-          downloadFile(pic, `userPic${index}`)
+        if (!userPic) return
+        userPic.map(pic => {
+          downloadFile(pic.url, pic.key.split('.png')[0])
         })
       }
       return (
-        <Button variant="outline" size="default" onClick={handlePicDownload}>
+        <Button variant="outline" size="default" onClick={handlePicDownload} disabled={!userPic}>
           <Download className="w-4 h-4" />
         </Button>
       )
@@ -121,16 +118,16 @@ export const adminOrderColumns = (): ColumnDef<AdminOrder>[] => [
   },
 
   {
-    accessorKey: 'orderStatus',
+    accessorKey: 'requestStatus',
     header: '상태',
     cell: ({ row }) => {
-      const status = row.getValue('orderStatus') as 'DONE' | 'ONGOING' | 'NOT STARTED'
+      const status = row.getValue('requestStatus') as Status
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button>
-              <Badge variant={status === 'DONE' ? 'outline' : status === 'ONGOING' ? 'secondary' : 'destructive'}>
-                {status === 'DONE' ? '작업완료' : status === 'ONGOING' ? '작업 중' : '작업대기'}
+              <Badge>
+                {status}
                 <ChevronDown className="w-4 h-4 ml-2" />
               </Badge>
             </button>

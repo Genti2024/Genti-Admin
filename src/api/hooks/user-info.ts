@@ -3,10 +3,11 @@ import axios from 'axios'
 
 import { CommonResponse } from '@/api/types/generic-response'
 import { PostUserStatusReqParams } from '@/api/types/user-info'
+import { axiosInstance } from '@/lib/api/axios-instance'
 import { UserInfo } from '@/types/user-info'
 
 const getUserInfoList = async () => {
-  const response = await axios.get<CommonResponse<UserInfo>>('/api/admin/users?role=”ALL”&page=0&size=10')
+  const response = await axiosInstance.get<CommonResponse<UserInfo>>(`/users?role=${'ALL'}&page=0&size=10`)
   return response.data
 }
 

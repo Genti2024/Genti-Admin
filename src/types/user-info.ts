@@ -2,12 +2,12 @@ export type UserRole = 'CREATOR' | 'USER'
 type Gender = 'M' | 'F'
 export type UserStatus = 'ACTIVATED' | 'DEACTIVATED'
 
-export type UserInfo = {
-  id: string
+export interface UserInfo {
+  id: number
   email: string
   userRole: UserRole
   age: number
-  gender: Gender
+  sex: string
   status: UserStatus
   createdAt: Date
   orderCount: number | null
@@ -15,4 +15,7 @@ export type UserInfo = {
   accumulatedBalance: number | null
   currentBalance: number | null
   recentConnection: Date
+  creatorResponseDto: null
+  depositResponseDto: null
+  lastLoginDate: Date
 }

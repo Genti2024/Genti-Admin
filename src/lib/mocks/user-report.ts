@@ -7,7 +7,7 @@ export const userReport: UserReport[] = [
     creatorEmail: 'sooyoung.park@kakao.com',
     picture: 'https://drive.google.com/file/d/1fmG1-8olC1Io6XF9A5J_rTDvNMPqLDsz/view',
     content: '주문내용과 전혀 다른 의상을 입고 있습니다',
-    reportStatus: 'NOT_RESOLVED',
+    reportStatus: 'RESOLVED',
     pictureGenerateResponseId: 4,
     createdAt: '2024-05-19T14:20:16',
   },

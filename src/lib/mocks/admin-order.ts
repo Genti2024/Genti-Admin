@@ -114,7 +114,7 @@ export const adminOrder: AdminOrder[] = [
       'https://drive.google.com/file/d/1TxHlQAXrkcZdUZAnh1deRoi2kBoT4mdy/view',
       'https://drive.google.com/file/d/1veGXxFBTHkD1XTisQY3tdZgGvDkvPDs9/view',
     ],
-    orderStatus: 'DONE',
+    orderStatus: 'ONGOING',
     assigned: 'Robin',
     uploadedpic: 'uploadedPic',
   },

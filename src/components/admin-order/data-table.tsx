@@ -8,7 +8,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { ListFilter, Pencil } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -50,7 +50,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   })
 
   const handleStatusFilter = (value: string) => {
-    table.getColumn('orderStatus')?.setFilterValue(value)
+    table.getColumn('requestStatus')?.setFilterValue(value)
   }
 
   return (
@@ -59,8 +59,8 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         <div className="flex items-center py-4">
           <Input
             placeholder="Filter emails..."
-            value={(table.getColumn('userEmail')?.getFilterValue() as string) ?? ''}
-            onChange={event => table.getColumn('userEmail')?.setFilterValue(event.target.value)}
+            value={(table.getColumn('requesterEmail')?.getFilterValue() as string) ?? ''}
+            onChange={event => table.getColumn('requesterEmail')?.setFilterValue(event.target.value)}
             className="max-w-sm"
           />
         </div>

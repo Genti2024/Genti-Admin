@@ -9,7 +9,7 @@ export const cacheOut: CacheOut[] = [
     accountHolder: '배진석',
     cacheAmount: 9000,
     producedNum: 6,
-    cacheOutStatus: 'NOT STARTED',
+    cacheOutStatus: 'DONE',
   },
   {
     id: '',

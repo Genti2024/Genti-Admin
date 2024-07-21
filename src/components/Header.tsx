@@ -10,7 +10,7 @@ const headerConfig = [
   { to: '/producer', label: 'Producer' },
   { to: '/user/info', label: 'User Info' },
   { to: '/user/report', label: 'User Report' },
-  { to: '/cache', label: 'Cache' },
+  { to: '/cache', label: 'Cash' },
   { to: '/upload/preset', label: 'Upload Preset' },
 ]
 const Header = () => {

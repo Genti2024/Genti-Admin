@@ -9,6 +9,7 @@ import { UserRole, UserStatus } from '@/types/user-info'
 const UserInfoPage = () => {
   const { data: userInfoList, isFetching } = useGetUserInfoList()
 
+  console.log(userInfoList?.response)
   const { mutate: mutateUserStatus } = usePostUserStatus()
 
   const handleUserStatus = useCallback(

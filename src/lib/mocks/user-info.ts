@@ -7,7 +7,7 @@ export const userInfo: UserInfo[] = [
     userRole: 'USER',
     age: 18,
     gender: 'F',
-    status: 'ACTIVATED',
+    status: 'DEACTIVATED',
     createdAt: new Date('2024-07-12'),
     orderCount: 2,
     producedCount: null,

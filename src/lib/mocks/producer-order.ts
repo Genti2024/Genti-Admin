@@ -88,8 +88,8 @@ export const producerOrder: ProducerOrder[] = [
     producerPic: '공급자 사진',
     prompt: `Creating an image of working as a barista at home. The background features warm lighting under a barista counter, and I am wearing an apron while extracting coffee. (home barista setup: 1.3), (warm lighting: 1.2), (barista apron: 1.3), (extracting coffee: 1.3), (professional barista atmosphere: 1.2)`,
     userPic: ['userPic1', 'userPic2', 'userPic3'],
-    orderStatus: 'NOT STARTED',
-    assigned: 'Woogie',
+    orderStatus: 'DONE',
+    assigned: 'Robin',
     uploadedpic: 'uploadedPic',
   },
 ]
