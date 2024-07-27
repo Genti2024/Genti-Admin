@@ -7,8 +7,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { ListFilter, Pencil } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { memo, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -20,18 +19,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { AdminOrder } from '@/types/admin-order'
 import { useFiles } from '@/util/useFiles'
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
+interface DataTableProps<TData> {
+  columns: ColumnDef<AdminOrder>[]
   data: TData[]
+  handlePage: (value: number) => void
+  currentPage: number
+  first: boolean
+  last: boolean
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export const DataTable = memo(({ columns, data, handlePage, first, last, currentPage }: DataTableProps<AdminOrder>) => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
   const filesRef = useRef<(null | HTMLInputElement)[]>([])
@@ -49,63 +51,8 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     },
   })
 
-  const handleStatusFilter = (value: string) => {
-    table.getColumn('requestStatus')?.setFilterValue(value)
-  }
-
-  console.log(data.length)
   return (
     <div>
-      <div className="flex flex-row items-center gap-4">
-        <div className="flex items-center py-4">
-          <Input
-            placeholder="Filter emails..."
-            value={(table.getColumn('requesterEmail')?.getFilterValue() as string) ?? ''}
-            onChange={event => table.getColumn('requesterEmail')?.setFilterValue(event.target.value)}
-            className="max-w-sm"
-          />
-        </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
-              <ListFilter className="w-4 h-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => handleStatusFilter('')}>모두</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleStatusFilter('DONE')}>작업대기</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleStatusFilter('ONGOING')}>작업 중</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleStatusFilter('NOT STARTED')}>작업완료</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline">
-              <Pencil className="w-4 h-4 mr-2" />
-              담당자 수정
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>담당자 수정 및 입력</DialogTitle>
-              <DialogDescription>
-                {table.getFilteredSelectedRowModel().rows.length} 개의 행이 선택되었습니다.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid items-center grid-cols-4 gap-4">
-                <Label htmlFor="name" className="text-right">
-                  이름
-                </Label>
-                <Input id="name" defaultValue="익명의 담당자" className="col-span-3" />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit">Save changes</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
       <div className="border rounded-md">
         <Table>
           <TableHeader>
@@ -209,13 +156,14 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         </Table>
       </div>
       <div className="flex items-center justify-end py-4 space-x-2">
-        <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+        <Button variant="outline" size="sm" onClick={() => handlePage(currentPage - 1)} disabled={first}>
           Previous
         </Button>
-        <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+        <span className="flex items-center justify-center p-1">{currentPage + 1}</span>
+        <Button variant="outline" size="sm" onClick={() => handlePage(currentPage + 1)} disabled={last}>
           Next
         </Button>
       </div>
     </div>
   )
-}
+})

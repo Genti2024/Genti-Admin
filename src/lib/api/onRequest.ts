@@ -7,9 +7,10 @@ export const onRequest = async (config: InternalAxiosRequestConfig) => {
   const accessToken = localStorage.getItem('_auth')
   if (!accessToken) {
     const newToken = await getNewToken()
-    config.headers.Authorization = `Bearer ${newToken}`
+    config.headers.Authorization = `${newToken}`
+    localStorage.setItem('_auth', newToken)
     return config
   }
-  config.headers.Authorization = `Bearer ${accessToken}`
+  config.headers.Authorization = `${accessToken}`
   return config
 }

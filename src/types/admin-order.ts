@@ -1,5 +1,4 @@
-type Gender = 'M' | 'F'
-export type Status = 'ASSIGNING' | 'IN_PROGRESS' | 'COMPLETED'
+export type Status = 'BEFORE_WORK' | 'IN_PROGRESS' | 'COMPLETED' | 'EXPIRED' | 'ALL'
 
 type PictureRatio = 'RATIO_3_2' | 'NONE' | 'RATIO_2_3'
 type PictureType =
@@ -10,7 +9,8 @@ type PictureType =
   | 'PictureProfile'
   | 'PictureUserFace'
   | 'ResponseExampleexport'
-export interface FacePictureList {
+
+export interface CommonPicture {
   id: number
   url: string
   key: string
@@ -18,12 +18,11 @@ export interface FacePictureList {
   type: PictureType
 }
 
-export interface PosePicture {
-  id: number
-  url: string
-  key: string
-  pictureRatio: PictureRatio
-  type: PictureType
+export interface ResponseList {
+  pictureGenerateResponseId: number
+  adminInCharge: string
+  pictureCompletedList: CommonPicture[] | null
+  responseStatus: Status
 }
 export interface AdminOrder {
   pictureGenerateRequestId: number
@@ -31,11 +30,13 @@ export interface AdminOrder {
   requesterEmail: string
   prompt: string
   promptAdvanced: string
-  facePictureList: FacePictureList[] | null
-  posePicture: PosePicture[] | null
+  facePictureList: CommonPicture[] | null
+  posePicture: CommonPicture[] | null
   cameraAngle: string
   shotCoverage: string
   requestStatus: Status
   createdAt: Date
   remainTime: string
+  adminInCharge: string
+  responseList: ResponseList[]
 }

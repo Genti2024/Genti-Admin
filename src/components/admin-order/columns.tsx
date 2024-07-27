@@ -7,23 +7,28 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { AdminOrder, FacePictureList, PosePicture, Status } from '@/types/admin-order'
+import { AdminOrder, CommonPicture, ResponseList, Status } from '@/types/admin-order'
 import { downloadFile } from '@/util/download'
 
-export const adminOrderColumns = (): ColumnDef<AdminOrder>[] => [
+export const adminOrderColumns = (handleCheckbox: (id: number) => void): ColumnDef<AdminOrder>[] => [
   {
     id: 'select',
     header: ({ table }) => (
       <Checkbox
         checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-        onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={value => {
+          table.toggleAllPageRowsSelected(!!value)
+        }}
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
-        onCheckedChange={value => row.toggleSelected(!!value)}
+        onCheckedChange={value => {
+          row.toggleSelected(!!value)
+          value && handleCheckbox((row.getValue('responseList') as ResponseList[])[0].pictureGenerateResponseId)
+        }}
         aria-label="Select row"
       />
     ),
@@ -82,7 +87,7 @@ export const adminOrderColumns = (): ColumnDef<AdminOrder>[] => [
     accessorKey: 'posePicture',
     header: '구도 참고 사진',
     cell: ({ row }) => {
-      const userPic = row.getValue('posePicture') as PosePicture[] | null
+      const userPic = row.getValue('posePicture') as CommonPicture[] | null
       const handlePicDownload = () => {
         if (!userPic) return
         userPic.map(pic => {
@@ -100,7 +105,7 @@ export const adminOrderColumns = (): ColumnDef<AdminOrder>[] => [
     accessorKey: 'facePictureList',
     header: '사용자 사진',
     cell: ({ row }) => {
-      const userPic = row.getValue('facePictureList') as FacePictureList[] | null
+      const userPic = row.getValue('facePictureList') as CommonPicture[] | null
       const handlePicDownload = () => {
         if (!userPic) return
         userPic.map(pic => {
@@ -116,30 +121,34 @@ export const adminOrderColumns = (): ColumnDef<AdminOrder>[] => [
   },
 
   {
-    accessorKey: 'requestStatus',
+    accessorKey: 'responseList',
     header: '상태',
     cell: ({ row }) => {
-      const status = row.getValue('requestStatus') as Status
+      const status = (row.getValue('responseList') as ResponseList[])[0].responseStatus as Status
       const statusKR = () => {
         switch (status) {
-          case 'ASSIGNING':
+          case 'BEFORE_WORK':
             return '작업대기'
           case 'IN_PROGRESS':
             return '작업 중'
           case 'COMPLETED':
             return '작업완료'
+          case 'EXPIRED':
+            return '만료'
           default:
             return '작업대기'
         }
       }
       const handleStatusVariant = () => {
         switch (status) {
-          case 'ASSIGNING':
+          case 'BEFORE_WORK':
             return 'destructive'
           case 'IN_PROGRESS':
             return 'outline'
           case 'COMPLETED':
             return 'default'
+          case 'EXPIRED':
+            return 'destructive'
           default:
             return 'outline'
         }
@@ -165,8 +174,12 @@ export const adminOrderColumns = (): ColumnDef<AdminOrder>[] => [
     filterFn: 'equalsString',
   },
   {
-    accessorKey: 'assigned',
+    accessorKey: 'adminInCharge',
     header: '담당자',
+    cell: ({ row }) => {
+      const adminInCharge = (row.getValue('responseList') as ResponseList[])[0].adminInCharge as string
+      return <div>{adminInCharge === '' ? '-' : adminInCharge}</div>
+    },
   },
   {
     id: 'uploadPic',
