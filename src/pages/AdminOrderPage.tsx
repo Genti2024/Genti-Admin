@@ -71,6 +71,7 @@ const AdminOrderPage = memo(() => {
             <DropdownMenuItem onClick={() => handleStatusFilter('BEFORE_WORK')}>작업대기</DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleStatusFilter('IN_PROGRESS')}>작업 중</DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleStatusFilter('COMPLETED')}>작업완료</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleStatusFilter('EXPIRED')}>만료</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         <Dialog>

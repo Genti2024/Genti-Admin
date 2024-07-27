@@ -1,27 +1,19 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { ChevronDown, Download } from 'lucide-react'
+import { VariantProps } from 'class-variance-authority'
+import { Download } from 'lucide-react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { toast } from 'sonner'
 
-import { Badge } from '@/components/ui/badge'
+import { Badge, badgeVariants } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { AdminOrder, CommonPicture, ResponseList, Status } from '@/types/admin-order'
 import { downloadFile } from '@/util/download'
 
 export const adminOrderColumns = (handleCheckbox: (id: number) => void): ColumnDef<AdminOrder>[] => [
   {
     id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-        onCheckedChange={value => {
-          table.toggleAllPageRowsSelected(!!value)
-        }}
-        aria-label="Select all"
-      />
-    ),
+    header: '',
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
@@ -124,52 +116,19 @@ export const adminOrderColumns = (handleCheckbox: (id: number) => void): ColumnD
     accessorKey: 'responseList',
     header: '상태',
     cell: ({ row }) => {
-      const status = (row.getValue('responseList') as ResponseList[])[0].responseStatus as Status
-      const statusKR = () => {
-        switch (status) {
-          case 'BEFORE_WORK':
-            return '작업대기'
-          case 'IN_PROGRESS':
-            return '작업 중'
-          case 'COMPLETED':
-            return '작업완료'
-          case 'EXPIRED':
-            return '만료'
-          default:
-            return '작업대기'
-        }
+      const status = (row.getValue('responseList') as ResponseList[])[0].responseStatus as Exclude<Status, 'ALL'>
+
+      const statusConfig: Record<
+        Exclude<Status, 'ALL'>,
+        { text: string; variant: VariantProps<typeof badgeVariants>['variant'] }
+      > = {
+        BEFORE_WORK: { text: '작업대기', variant: 'destructive' },
+        IN_PROGRESS: { text: '작업 중', variant: 'outline' },
+        COMPLETED: { text: '작업완료', variant: 'default' },
+        EXPIRED: { text: '만료', variant: 'destructive' },
       }
-      const handleStatusVariant = () => {
-        switch (status) {
-          case 'BEFORE_WORK':
-            return 'destructive'
-          case 'IN_PROGRESS':
-            return 'outline'
-          case 'COMPLETED':
-            return 'default'
-          case 'EXPIRED':
-            return 'destructive'
-          default:
-            return 'outline'
-        }
-      }
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button>
-              <Badge variant={handleStatusVariant()}>
-                {statusKR()}
-                <ChevronDown className="w-4 h-4 ml-2" />
-              </Badge>
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => {}}>작업완료</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => {}}>작업 중</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => {}}>작업대기</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
+
+      return <Badge variant={statusConfig[status].variant}>{statusConfig[status].text}</Badge>
     },
     filterFn: 'equalsString',
   },
