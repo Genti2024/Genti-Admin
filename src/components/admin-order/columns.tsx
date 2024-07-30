@@ -1,16 +1,33 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { VariantProps } from 'class-variance-authority'
+import { cx, VariantProps } from 'class-variance-authority'
 import { Download } from 'lucide-react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { toast } from 'sonner'
 
 import { Badge, badgeVariants } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 import { AdminOrder, CommonPicture, ResponseList, Status } from '@/types/admin-order'
 import { downloadFile } from '@/util/download'
 
-export const adminOrderColumns = (handleCheckbox: (id: number) => void): ColumnDef<AdminOrder>[] => [
+interface AdminOrderProps {
+  handleCheckbox: (id: number) => void
+  files: File[]
+  preview: string[]
+  handleFileChange: (e: React.ChangeEvent<HTMLInputElement>, index: number) => void
+  handleDeleteFile: (index: number) => void
+  handlePictureUpload: (file: File, pictureGenerateResponseId: number) => void
+}
+export const adminOrderColumns = ({
+  handleCheckbox,
+  files,
+  preview,
+  handleDeleteFile,
+  handleFileChange,
+  handlePictureUpload,
+}: AdminOrderProps): ColumnDef<AdminOrder>[] => [
   {
     id: 'select',
     header: '',
@@ -44,7 +61,7 @@ export const adminOrderColumns = (handleCheckbox: (id: number) => void): ColumnD
     },
   },
   { accessorKey: 'requesterEmail', header: 'email' },
-  { accessorKey: 'userGender', header: '성별' },
+  { accessorKey: 'sex', header: '성별' },
   {
     accessorKey: 'prompt',
     header: '주문 내용',
@@ -79,12 +96,10 @@ export const adminOrderColumns = (handleCheckbox: (id: number) => void): ColumnD
     accessorKey: 'posePicture',
     header: '구도 참고 사진',
     cell: ({ row }) => {
-      const userPic = row.getValue('posePicture') as CommonPicture[] | null
+      const userPic = row.getValue('posePicture') as CommonPicture | null
       const handlePicDownload = () => {
         if (!userPic) return
-        userPic.map(pic => {
-          downloadFile(pic.url, pic.key.split('.png')[0])
-        })
+        downloadFile(userPic.url, userPic.key)
       }
       return (
         <Button variant="outline" size="default" onClick={handlePicDownload} disabled={!userPic}>
@@ -101,7 +116,7 @@ export const adminOrderColumns = (handleCheckbox: (id: number) => void): ColumnD
       const handlePicDownload = () => {
         if (!userPic) return
         userPic.map(pic => {
-          downloadFile(pic.url, pic.key.split('.png')[0])
+          downloadFile(pic.url, pic.key)
         })
       }
       return (
@@ -141,12 +156,88 @@ export const adminOrderColumns = (handleCheckbox: (id: number) => void): ColumnD
     },
   },
   {
-    id: 'uploadPic',
+    accessorKey: 'uploadPic',
     header: '사진업로드',
+    cell: ({ row }) => {
+      const pictureFromServer = (row.getValue('responseList') as ResponseList[])[0].pictureCompletedList ?? []
+      return (
+        <label
+          htmlFor={row.id}
+          className={cx(
+            buttonVariants({ variant: pictureFromServer.length > 0 ? 'ghost' : 'outline' }),
+            'cursor-pointer',
+          )}
+        >
+          업로드
+          <Input
+            id={row.id}
+            type="file"
+            className="hidden"
+            accept="image/*"
+            onChange={e => handleFileChange(e, row.index)}
+            disabled={pictureFromServer.length > 0}
+          />
+        </label>
+      )
+    },
   },
-  { id: 'checkPic', header: '사진확인' },
   {
-    id: 'sendPic',
+    accessorKey: 'checkPic',
+    header: '사진확인',
+    cell: ({ row }) => {
+      const pictureFromServer = (row.getValue('responseList') as ResponseList[])[0].pictureCompletedList ?? []
+      if (pictureFromServer[0]) {
+        return (
+          <Button variant="outline" onClick={() => downloadFile(pictureFromServer[0].url, pictureFromServer[0].key)}>
+            <Download className="w-4 h-4" />
+          </Button>
+        )
+      }
+      return (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline" disabled={!preview[row.index] && !pictureFromServer?.length}>
+              사진 확인
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle className="mb-5">사진 확인</DialogTitle>
+              {preview[row.index] === undefined ? (
+                <div className="flex items-center justify-center w-full bg-gray-100 rounded-md h-96">
+                  이미지가 없습니다.
+                </div>
+              ) : (
+                <img src={preview[row.index]} alt="preview" className="object-cover w-full rounded-md h-96" />
+              )}
+            </DialogHeader>
+            <div className="grid gap-4 py-4"></div>
+            <DialogFooter>
+              <Button onClick={() => handleDeleteFile(row.index)}>삭제하기</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )
+    },
+  },
+  {
+    accessorKey: 'sendPic',
     header: '사진전송',
+    cell: ({ row }) => {
+      return (
+        <Button
+          size="default"
+          disabled={!files[row.index]}
+          onClick={() =>
+            handlePictureUpload(
+              files[row.index],
+              (row.getValue('responseList') as ResponseList[])[0].pictureGenerateResponseId,
+            )
+          }
+        >
+          전송
+        </Button>
+      )
+    },
   },
 ]

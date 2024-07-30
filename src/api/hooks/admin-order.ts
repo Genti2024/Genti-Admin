@@ -6,11 +6,11 @@ import { useSearchParams } from 'react-router-dom'
 import { AdminInChargeResponse, AdminOrderResponse } from '@/api/types/admin-order'
 import { CommonResponse } from '@/api/types/generic-response'
 import { axiosInstance } from '@/lib/api/axios-instance'
-import { AdminOrder, Status } from '@/types/admin-order'
+import { Status } from '@/types/admin-order'
 
 const getAdminOrderList = async (page: string, status: Status, email?: string) => {
   const response = await axiosInstance.get<CommonResponse<AdminOrderResponse>>(
-    `/picture-generate-requests/admin-matched?page=${page}&size=10&status=${status}&${email ? `&email=${email}` : ''}`,
+    `admin/picture-generate-requests/admin-matched?page=${page}&size=10&status=${status}&${email ? `&email=${email}` : ''}`,
   )
   return response.data.response
 }
@@ -30,7 +30,7 @@ const postSetAdminInCharge = async ({
   pictureGenerateResponseId,
 }: Omit<AdminInChargeResponse, 'responseStatus'>) => {
   const response = await axiosInstance.post<CommonResponse<AdminInChargeResponse>>(
-    `/picture-generate-responses/${pictureGenerateResponseId}/admin-in-charge`,
+    `admin/picture-generate-responses/${pictureGenerateResponseId}/admin-in-charge`,
     { adminInCharge },
   )
   return response.data.response

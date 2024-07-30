@@ -1,57 +1,43 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 
-export const useFiles = (filesRef: React.MutableRefObject<(HTMLInputElement | null)[]>, length: number) => {
-  const [preview, setPreview] = useState<string[]>(new Array(length).fill(''))
-  const [btnDisabled, setBtnDisabled] = useState<boolean[]>(new Array(length).fill(true))
+export const useFiles = () => {
+  const [files, setFiles] = useState<File[]>([])
+  const [preview, setPreview] = useState<string[]>([])
 
-  const currentFiles = useMemo(() => filesRef.current as HTMLInputElement[], [filesRef])
-  const currentFile = useMemo(() => (index: number) => filesRef.current[index]?.files as FileList, [filesRef])
-
-  const handleFileInput = useCallback(
-    (index: number) => {
-      filesRef.current[index]?.click()
-    },
-    [filesRef],
-  )
-
-  const handleFileUpload = useCallback(
-    (index: number) => {
-      // 미리보기가 존재하면 return
-      const img = currentFile(index)[0]
-      const reader = new FileReader()
-      reader.readAsDataURL(img)
-      reader.onload = () => {
-        setPreview(prev => {
-          const newPreview = [...prev]
-          newPreview[index] = reader.result as string
-          return newPreview
-        })
-      }
-    },
-    [currentFile],
-  )
-
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, rowIndex: number) => {
-    const isDisabled = !e.target.files?.length
-    setBtnDisabled(prev => prev.map((item, i) => (i === rowIndex ? isDisabled : item)))
+  const handleFilePreview = useCallback((file: File, index: number) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => {
+      setPreview(prev => {
+        const newPreview = [...prev]
+        newPreview[index] = reader.result as string
+        return newPreview
+      })
+    }
   }, [])
 
-  const handleFileDelete = useCallback(
-    (index: number) => {
-      setPreview(prev => prev.map((item, i) => (i === index ? '' : item)))
-      setBtnDisabled(prev => prev.map((item, i) => (i === index ? true : item)))
-      currentFiles[index].files = null
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+      if (!e.target.files?.length) return
+      const currentFile = e.target.files[0]
+      const fileType = currentFile.type
+      if (!fileType.includes('image')) return
+      setFiles(prev => {
+        const newFiles = [...prev]
+        newFiles[index] = currentFile
+        return newFiles
+      })
+      handleFilePreview(currentFile, index)
     },
-    [currentFiles],
+    [handleFilePreview],
   )
-  return {
-    handleFileInput,
-    currentFiles,
-    currentFile,
-    handleFileUpload,
-    preview,
-    btnDisabled,
-    handleFileChange,
-    handleFileDelete,
-  }
+
+  const handleDeleteFile = useCallback(
+    (index: number) => {
+      setFiles(files.filter((_, i) => i !== index))
+      setPreview(preview.filter((_, i) => i !== index))
+    },
+    [files, preview],
+  )
+  return { files, preview, handleFileChange, handleDeleteFile }
 }
