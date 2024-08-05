@@ -7,7 +7,9 @@ interface Token {
   refreshToken: string
 }
 export const getNewToken = async () => {
-  const response = await axios.get<CommonResponse<Token>>('https://genti.kr/auth/v1/login/testjwt?role=ADMIN')
+  const response = await axios.get<CommonResponse<Token>>(
+    'http://ec2-15-165-111-211.ap-northeast-2.compute.amazonaws.com/api/auth/v1/login/testjwt?role=ADMIN',
+  )
   console.log(response.data)
   return response.data.response.accessToken
 }

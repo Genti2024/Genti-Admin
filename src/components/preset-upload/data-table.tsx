@@ -1,19 +1,17 @@
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table'
-import { useCallback, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogDescription,
+//   DialogFooter,
+//   DialogHeader,
+//   DialogTitle,
+//   DialogTrigger,
+// } from '@/components/ui/dialog'
+// import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useFiles } from '@/util/useFiles'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -21,10 +19,6 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
-  const filesRef = useRef<(null | HTMLInputElement)[]>([])
-  const { handleFileUpload, handleFileInput, handleFileChange, currentFiles, preview, btnDisabled, handleFileDelete } =
-    useFiles(filesRef, data.length)
-
   const table = useReactTable({
     data,
     columns,
@@ -39,7 +33,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 
   return (
     <div>
-      <div className="flex flex-row items-center gap-4 py-2">
+      {/* <div className="flex flex-row items-center gap-4 py-2">
         <div className="flex items-center w-full gap-4 p-2 border rounded-md">
           <Input placeholder="주문을 입력하세요..." defaultValue="" />
           <Button variant="outline" size="default" onClick={() => handleFileInput(0)}>
@@ -81,7 +75,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           </Dialog>
           <Button type="submit">저장</Button>
         </div>
-      </div>
+      </div> */}
       <div className="border rounded-md">
         <Table>
           <TableHeader>

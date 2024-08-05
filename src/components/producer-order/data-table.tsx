@@ -8,7 +8,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { ListFilter, Pencil } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -24,7 +24,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useFiles } from '@/util/useFiles'
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
@@ -32,9 +31,7 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const filesRef = useRef<(null | HTMLInputElement)[]>([])
-  const { handleFileUpload, handleFileInput, handleFileChange, currentFiles, preview, btnDisabled, handleFileDelete } =
-    useFiles(filesRef, data.length)
+
   const table = useReactTable({
     data,
     columns,
@@ -122,72 +119,72 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
               table.getRowModel().rows.map(row => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                   {row.getVisibleCells().map(cell => {
-                    if (cell.column.columnDef.id === 'uploadPic') {
-                      return (
-                        <TableCell key={cell.id}>
-                          <div>
-                            <Button variant="outline" size="default" onClick={() => handleFileInput(cell.row.index)}>
-                              업로드
-                            </Button>
-                            <Input
-                              type="file"
-                              className="hidden"
-                              ref={el => (currentFiles[cell.row.index] = el as HTMLInputElement)}
-                              accept="image/*"
-                              onChange={e => handleFileChange(e, cell.row.index)}
-                            />
-                          </div>
-                        </TableCell>
-                      )
-                    }
-                    if (cell.column.columnDef.id === 'checkPic') {
-                      return (
-                        <TableCell key={cell.id}>
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button
-                                variant="outline"
-                                disabled={btnDisabled[cell.row.index]}
-                                onClick={() => handleFileUpload(cell.row.index)}
-                              >
-                                사진 확인
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-[425px]">
-                              <DialogHeader>
-                                <DialogTitle className="mb-5">사진 확인</DialogTitle>
-                                <DialogDescription>
-                                  {preview[cell.row.index] === '' ? (
-                                    <div className="flex items-center justify-center w-full bg-gray-100 rounded-md h-96">
-                                      <p>이미지가 없습니다.</p>
-                                    </div>
-                                  ) : (
-                                    <img
-                                      src={preview[cell.row.index]}
-                                      alt="preview"
-                                      className="object-cover w-full rounded-md h-96"
-                                    />
-                                  )}
-                                </DialogDescription>
-                              </DialogHeader>
-                              <div className="grid gap-4 py-4"></div>
-                              <DialogFooter>
-                                <Button type="submit" onClick={() => handleFileDelete(cell.row.index)}>
-                                  삭제하기
-                                </Button>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
-                        </TableCell>
-                      )
-                    }
-                    if (cell.column.columnDef.id === 'sendPic') {
-                      return (
-                        <TableCell key={cell.id}>
-                          <Button onClick={() => console.log(preview)}>전송</Button>
-                        </TableCell>
-                      )
-                    }
+                    // if (cell.column.columnDef.id === 'uploadPic') {
+                    //   return (
+                    //     <TableCell key={cell.id}>
+                    //       <div>
+                    //         <Button variant="outline" size="default" onClick={() => handleFileInput(cell.row.index)}>
+                    //           업로드
+                    //         </Button>
+                    //         <Input
+                    //           type="file"
+                    //           className="hidden"
+                    //           ref={el => (currentFiles[cell.row.index] = el as HTMLInputElement)}
+                    //           accept="image/*"
+                    //           onChange={e => handleFileChange(e, cell.row.index)}
+                    //         />
+                    //       </div>
+                    //     </TableCell>
+                    //   )
+                    // }
+                    // if (cell.column.columnDef.id === 'checkPic') {
+                    //   return (
+                    //     <TableCell key={cell.id}>
+                    //       <Dialog>
+                    //         <DialogTrigger asChild>
+                    //           <Button
+                    //             variant="outline"
+                    //             disabled={btnDisabled[cell.row.index]}
+                    //             onClick={() => handleFileUpload(cell.row.index)}
+                    //           >
+                    //             사진 확인
+                    //           </Button>
+                    //         </DialogTrigger>
+                    //         <DialogContent className="sm:max-w-[425px]">
+                    //           <DialogHeader>
+                    //             <DialogTitle className="mb-5">사진 확인</DialogTitle>
+                    //             <DialogDescription>
+                    //               {preview[cell.row.index] === '' ? (
+                    //                 <div className="flex items-center justify-center w-full bg-gray-100 rounded-md h-96">
+                    //                   <p>이미지가 없습니다.</p>
+                    //                 </div>
+                    //               ) : (
+                    //                 <img
+                    //                   src={preview[cell.row.index]}
+                    //                   alt="preview"
+                    //                   className="object-cover w-full rounded-md h-96"
+                    //                 />
+                    //               )}
+                    //             </DialogDescription>
+                    //           </DialogHeader>
+                    //           <div className="grid gap-4 py-4"></div>
+                    //           <DialogFooter>
+                    //             <Button type="submit" onClick={() => handleFileDelete(cell.row.index)}>
+                    //               삭제하기
+                    //             </Button>
+                    //           </DialogFooter>
+                    //         </DialogContent>
+                    //       </Dialog>
+                    //     </TableCell>
+                    //   )
+                    // }
+                    // if (cell.column.columnDef.id === 'sendPic') {
+                    //   return (
+                    //     <TableCell key={cell.id}>
+                    //       <Button onClick={() => console.log(preview)}>전송</Button>
+                    //     </TableCell>
+                    //   )
+                    // }
                     return (
                       <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                     )

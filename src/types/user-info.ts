@@ -1,5 +1,4 @@
 export type UserRole = 'CREATOR' | 'USER'
-type Gender = 'M' | 'F'
 export type UserStatus = 'ACTIVATED' | 'DEACTIVATED'
 
 export interface UserInfo {

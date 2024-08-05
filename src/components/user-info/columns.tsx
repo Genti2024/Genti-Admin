@@ -3,16 +3,13 @@ import { ChevronDown } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { UserInfo, UserRole, UserStatus } from '@/types/user-info'
+import { UserInfo, UserStatus } from '@/types/user-info'
 
-interface UserInfoColumnsProps {
-  handleUserStatus: (id: string, status: UserStatus) => void
-  handleUserRole: (id: string, userRole: UserRole) => void
-}
-export const getUserColumns = ({
-  handleUserRole: handleUserRole,
-  handleUserStatus,
-}: UserInfoColumnsProps): ColumnDef<UserInfo>[] => [
+// interface UserInfoColumnsProps {
+//   handleUserStatus: (id: string, status: UserStatus) => void
+//   handleUserRole: (id: string, userRole: UserRole) => void
+// }
+export const getUserColumns = (): ColumnDef<UserInfo>[] => [
   { accessorKey: 'email', header: 'e-mail' },
   {
     accessorKey: 'userRole',
@@ -25,8 +22,8 @@ export const getUserColumns = ({
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => handleUserRole(row.original.id, 'CREATOR')}>공급자</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleUserRole(row.original.id, 'USER')}>사용자</DropdownMenuItem>
+          {/* <DropdownMenuItem onClick={() => handleUserRole(row.original.id, 'CREATOR')}>공급자</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleUserRole(row.original.id, 'USER')}>사용자</DropdownMenuItem> */}
         </DropdownMenuContent>
       </DropdownMenu>
     ),
@@ -50,10 +47,8 @@ export const getUserColumns = ({
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => handleUserStatus(row.original.id, 'ACTIVATED')}>활성화</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleUserStatus(row.original.id, 'DEACTIVATED')}>
-              비활성화
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {}}>활성화</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {}}>비활성화</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
