@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import { useGetUserInfoList, usePostUserStatus } from '@/api/hooks/user-info'
+import { useGetUserInfoList, usePostUserRole, usePostUserStatus } from '@/api/hooks/user-info'
 import { getUserColumns } from '@/components/user-info/columns'
 import { DataTable } from '@/components/user-info/data-table'
 // import { userInfo } from '@/lib/mocks/user-info'
@@ -10,6 +10,8 @@ const UserInfoPage = () => {
   const { data: userInfoList, isFetching } = useGetUserInfoList()
   console.log(userInfoList?.content)
   const { mutate: mutateUserStatus } = usePostUserStatus()
+
+  const { mutate: mutateUserRole } = usePostUserRole()
 
   const handleUserStatus = useCallback(
     (id: string, status: UserStatus) => {
@@ -27,7 +29,7 @@ const UserInfoPage = () => {
   )
 
   const columns = useMemo(
-    () => getUserColumns({ handleUserStatus, handleUserRole: handleUserRole }),
+    () => getUserColumns({ handleUserStatus, handleUserRole }),
     [handleUserRole, handleUserStatus],
   )
 
@@ -40,6 +42,3 @@ const UserInfoPage = () => {
 }
 
 export default UserInfoPage
-function mutateUserRole(arg0: { id: string; userRole: UserRole }) {
-  throw new Error('Function not implemented.')
-}

@@ -25,8 +25,8 @@ export const getUserColumns = ({
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => handleUserRole(String(row.original.id), '공급자')}>공급자</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleUserRole(String(row.original.id), '사용자')}>사용자</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleUserRole(String(row.original.id), 'CREATOR')}>공급자</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleUserRole(String(row.original.id), 'USER')}>사용자</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),
