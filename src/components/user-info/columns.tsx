@@ -3,7 +3,7 @@ import { ChevronDown } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { UserInfo, UserRole, UserStatus } from '@/types/user-info'
+import { CreatorResponseDto, DepositResponseDto, UserInfo, UserRole, UserStatus } from '@/types/user-info'
 
 interface UserInfoColumnsProps {
   handleUserStatus: (id: string, status: UserStatus) => void
@@ -21,37 +21,42 @@ export const getUserColumns = ({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button>
-            <Badge variant="secondary">{row.getValue('userRole') === 'CREATOR' ? '공급자' : '사용자'}</Badge>
+            <Badge variant="secondary">{row.getValue('userRole') === '공급자' ? '공급자' : '사용자'}</Badge>
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => handleUserRole(row.original.id, 'CREATOR')}>공급자</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleUserRole(row.original.id, 'USER')}>사용자</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleUserRole(String(row.original.id), '공급자')}>공급자</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleUserRole(String(row.original.id), '사용자')}>사용자</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),
     filterFn: 'equalsString',
   },
   { accessorKey: 'age', header: '나이' },
-  { accessorKey: 'gender', header: '성별' },
   {
-    accessorKey: 'status',
+    accessorKey: 'sex',
+    header: '성별',
+  },
+  {
+    accessorKey: 'userStatus',
     header: '상태',
     cell: ({ row }) => {
-      const status = row.getValue('status') as UserStatus
+      const status = row.getValue('userStatus') as UserStatus
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button>
-              <Badge variant={status === 'ACTIVATED' ? 'default' : 'outline'}>
-                {status === 'ACTIVATED' ? '활성화' : '비활성화'}
+              <Badge variant={status === '활성' ? 'default' : 'outline'}>
+                {status === '활성' ? '활성화' : '비활성화'}
                 <ChevronDown className="w-4 h-4 ml-2" />
               </Badge>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => handleUserStatus(row.original.id, 'ACTIVATED')}>활성화</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleUserStatus(row.original.id, 'DEACTIVATED')}>
+            <DropdownMenuItem onClick={() => handleUserStatus(String(row.original.id), '활성')}>
+              활성화
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleUserStatus(String(row.original.id), '비활성')}>
               비활성화
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -59,47 +64,54 @@ export const getUserColumns = ({
       )
     },
   },
+  // {
+  //   accessorKey: 'createdAt',
+  //   header: '가입 일자',
+  //   cell: ({ row }) => {
+  //     const date = row.getValue('createdAt') as Date
+  //     const formatted = new Date(date).toISOString().slice(0, 19).replace('T', ' ')
+  //     return <div>{formatted}</div>
+  //   },
+  // },
   {
-    accessorKey: 'createdAt',
-    header: '가입 일자',
+    accessorKey: 'requestTaskCount',
+    header: '누적 주문 회수',
+    cell: ({ row }) => <div className="text-center">{row.getValue('requestTaskCount') ?? '-'}</div>,
+  },
+  {
+    accessorKey: 'creatorResponseDto',
+    header: '누적 공급 횟수',
     cell: ({ row }) => {
-      const date = row.getValue('createdAt') as Date
-      const formatted = new Intl.DateTimeFormat('ko-KR').format(date)
-      return <div>{formatted}</div>
+      const creatorResponseDto = row.getValue('creatorResponseDto') as CreatorResponseDto | null
+      const completedTaskCount = creatorResponseDto?.completedTaskCount
+      return <div className="text-center">{completedTaskCount ?? '-'}</div>
     },
   },
   {
-    accessorKey: 'orderCount',
-    header: '누적 주문 회수',
-    cell: ({ row }) => <div className="text-center">{row.getValue('orderCount') ?? '-'}</div>,
-  },
-  {
-    accessorKey: 'producedCount',
-    header: '누적 공급 횟수',
-    cell: ({ row }) => <div className="text-center">{row.getValue('producedCount') ?? '-'}</div>,
-  },
-  {
-    accessorKey: 'accumulatedBalance',
+    accessorKey: 'depositResponseDto',
     header: '누적 획득 금액',
     cell: ({ row }) => {
-      if (row.getValue('accumulatedBalance') === null) return <div className="text-center">-</div>
-      const amount = parseFloat(row.getValue('accumulatedBalance'))
-      const formatted = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(amount)
-      return <div>{formatted}</div>
+      const DepositResponseDto = row.getValue('depositResponseDto') as DepositResponseDto | null
+      const totalAmount = DepositResponseDto?.totalAmount
+      // const amount = parseFloat(totalAmount)
+      // const formatted = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(amount)
+      return <div>{totalAmount ?? '-'}</div>
     },
   },
   {
-    accessorKey: 'currentBalance',
+    accessorKey: 'DepositResponseDto',
     header: '현재 보유 금액',
     cell: ({ row }) => {
-      if (row.getValue('accumulatedBalance') === null) return <div className="text-center">-</div>
-      const amount = parseFloat(row.getValue('currentBalance'))
-      const formatted = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(amount)
-      return <div>{formatted}</div>
+      const DepositResponseDto = row.getValue('depositResponseDto') as DepositResponseDto | null
+      const nowAmount = DepositResponseDto?.nowAmount
+
+      // const amount = parseFloat(nowAmount)
+      // const formatted = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(amount)
+      return <div>{nowAmount ?? '-'}</div>
     },
   },
   {
-    accessorKey: 'recentConnection',
+    accessorKey: 'lastLoginDate',
     header: '최근 접속',
     cell: ({ row }) => {
       const date = row.getValue('createdAt') as Date

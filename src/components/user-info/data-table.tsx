@@ -58,8 +58,8 @@ export function DataTable<TData, TValue>({ columns, data, isFetching }: DataTabl
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => handlePrivilegeFilter('')}>모두</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handlePrivilegeFilter('CREATOR')}>공급자</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handlePrivilegeFilter('USER')}>사용자</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handlePrivilegeFilter('공급자')}>공급자</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handlePrivilegeFilter('사용자')}>사용자</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

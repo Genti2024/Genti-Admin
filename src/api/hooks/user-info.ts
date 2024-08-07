@@ -1,14 +1,12 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
 
 import { CommonResponse } from '@/api/types/generic-response'
-import { PostUserStatusReqParams } from '@/api/types/user-info'
+import { PostUserRoleReqParams, PostUserStatusReqParams, StatusResponse, UserInfoResponse } from '@/api/types/user-info'
 import { axiosInstance } from '@/lib/api/axios-instance'
-import { UserInfo } from '@/types/user-info'
 
 const getUserInfoList = async () => {
-  const response = await axiosInstance.get<CommonResponse<UserInfo>>(`/users?role=${'ALL'}&page=0&size=10`)
-  return response.data
+  const response = await axiosInstance.get<CommonResponse<UserInfoResponse>>(`/users?role=${'ALL'}&page=0&size=10`)
+  return response.data.response
 }
 
 export const useGetUserInfoList = () => {
@@ -16,7 +14,7 @@ export const useGetUserInfoList = () => {
 }
 
 const postUserStatus = async ({ id, status }: PostUserStatusReqParams) => {
-  const response = await axios.post<CommonResponse<boolean>>(`/api/admin/users/${id}/status`, { status })
+  const response = await axiosInstance.post<CommonResponse<StatusResponse>>(`/users/${id}/status`, { status })
   return response.data
 }
 
@@ -25,7 +23,22 @@ export const usePostUserStatus = () => {
   return useMutation({
     mutationFn: postUserStatus,
     onSuccess: data => {
-      data.response ?? queryClient.invalidateQueries({ queryKey: ['userInfo'] })
+      data ?? queryClient.invalidateQueries({ queryKey: ['userInfo'] })
+    },
+  })
+}
+
+const postUserRole = async ({ id, role }: PostUserRoleReqParams) => {
+  const response = await axiosInstance.post<CommonResponse<StatusResponse>>(`/users/${id}/role`, { role })
+  return response.data
+}
+
+export const usePostUserRole = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: postUserRole,
+    onSuccess: data => {
+      data ?? queryClient.invalidateQueries({ queryKey: ['userInfo'] })
     },
   })
 }
