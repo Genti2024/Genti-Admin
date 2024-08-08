@@ -1,11 +1,14 @@
-type Status = 'RESOLVED' | 'NOT_RESOLVED'
-export type UserReport = {
-  id: number
+import { CommonPicture } from '@/types/admin-order'
+
+export type ReportStatus = 'RESOLVED' | 'NOT_RESOLVED'
+
+export interface UserReportProps {
+  reportId: number
   reporterEmail: string
-  creatorEmail: string | null
-  picture: string
+  creatorEmail: string
+  pictureCompleted: CommonPicture
   content: string
-  reportStatus: Status
+  reportStatus: ReportStatus
   pictureGenerateResponseId: number
-  createdAt: string
+  createdAt: Date
 }
