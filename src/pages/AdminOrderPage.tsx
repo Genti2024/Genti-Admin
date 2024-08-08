@@ -79,17 +79,18 @@ const AdminOrderPage = memo(() => {
 
   if (isFetching)
     return (
-      <TableBody>
-        {Array.from({ length: 10 }).map((_, index) => (
-          <TableRow key={index}>
-            {Array.from({ length: 11 }).map((_, index) => (
-              <TableCell key={index} className="h-10 text-center">
-                <Skeleton className="h-5 w-15" />
-              </TableCell>
-            ))}
-          </TableRow>
-        ))}
-      </TableBody>
+      <div>hi</div>
+      // <TableBody>
+      //   {Array.from({ length: 10 }).map((_, index) => (
+      //     <TableRow key={index}>
+      //       {Array.from({ length: 11 }).map((_, index) => (
+      //         <TableCell key={index} className="h-10 text-center">
+      //           <Skeleton className="h-5 w-15" />
+      //         </TableCell>
+      //       ))}
+      //     </TableRow>
+      //   ))}
+      // </TableBody>
     )
 
   return (
