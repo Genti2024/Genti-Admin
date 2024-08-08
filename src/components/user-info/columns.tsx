@@ -3,13 +3,16 @@ import { ChevronDown } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { UserInfo, UserStatus } from '@/types/user-info'
+import { DepositResponseDto, UserInfo, UserRole, UserStatus } from '@/types/user-info'
 
-// interface UserInfoColumnsProps {
-//   handleUserStatus: (id: string, status: UserStatus) => void
-//   handleUserRole: (id: string, userRole: UserRole) => void
-// }
-export const getUserColumns = (): ColumnDef<UserInfo>[] => [
+interface UserInfoColumnsProps {
+  handleUserStatus: (id: string, status: UserStatus) => void
+  handleUserRole: (id: string, userRole: UserRole) => void
+}
+export const getUserColumns = ({
+  handleUserRole: handleUserRole,
+  handleUserStatus,
+}: UserInfoColumnsProps): ColumnDef<UserInfo>[] => [
   { accessorKey: 'email', header: 'e-mail' },
   {
     accessorKey: 'userRole',
@@ -22,8 +25,8 @@ export const getUserColumns = (): ColumnDef<UserInfo>[] => [
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          {/* <DropdownMenuItem onClick={() => handleUserRole(row.original.id, 'CREATOR')}>공급자</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleUserRole(row.original.id, 'USER')}>사용자</DropdownMenuItem> */}
+          <DropdownMenuItem onClick={() => handleUserRole(row.original.id, 'CREATOR')}>공급자</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleUserRole(row.original.id, 'USER')}>사용자</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),
@@ -40,15 +43,19 @@ export const getUserColumns = (): ColumnDef<UserInfo>[] => [
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button>
-              <Badge variant={status === 'ACTIVATED' ? 'default' : 'outline'}>
-                {status === 'ACTIVATED' ? '활성화' : '비활성화'}
+              <Badge variant={status === '활성화' ? 'default' : 'outline'}>
+                {status === '활성화' ? '활성화' : '비활성화'}
                 <ChevronDown className="w-4 h-4 ml-2" />
               </Badge>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => {}}>활성화</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => {}}>비활성화</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleUserStatus(String(row.original.id), '활성화')}>
+              활성화
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleUserStatus(String(row.original.id), '비활성화')}>
+              비활성화
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -64,37 +71,39 @@ export const getUserColumns = (): ColumnDef<UserInfo>[] => [
     },
   },
   {
-    accessorKey: 'orderCount',
+    accessorKey: 'requestTaskCount',
     header: '누적 주문 회수',
-    cell: ({ row }) => <div className="text-center">{row.getValue('orderCount') ?? '-'}</div>,
+    cell: ({ row }) => <div className="text-center">{row.getValue('requestTaskCount') ?? '-'}</div>,
   },
   {
-    accessorKey: 'producedCount',
+    accessorKey: 'creatorResponseDto',
     header: '누적 공급 횟수',
-    cell: ({ row }) => <div className="text-center">{row.getValue('producedCount') ?? '-'}</div>,
+    cell: ({ row }) => <div className="text-center">{row.getValue('completedTaskCount') ?? '-'}</div>,
   },
   {
-    accessorKey: 'accumulatedBalance',
+    accessorKey: 'depositResponseDto',
     header: '누적 획득 금액',
     cell: ({ row }) => {
-      if (row.getValue('accumulatedBalance') === null) return <div className="text-center">-</div>
-      const amount = parseFloat(row.getValue('accumulatedBalance'))
-      const formatted = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(amount)
-      return <div>{formatted}</div>
+      const DepositResponseDto = row.getValue('depositResponseDto') as DepositResponseDto | null
+      const totalAmount = DepositResponseDto?.totalAmount
+      // const amount = parseFloat(totalAmount)
+      // const formatted = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(amount)
+      return <div>{totalAmount ?? '-'}</div>
     },
   },
   {
-    accessorKey: 'currentBalance',
+    accessorKey: 'DepositResponseDto',
     header: '현재 보유 금액',
     cell: ({ row }) => {
-      if (row.getValue('accumulatedBalance') === null) return <div className="text-center">-</div>
-      const amount = parseFloat(row.getValue('currentBalance'))
-      const formatted = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(amount)
-      return <div>{formatted}</div>
+      const DepositResponseDto = row.getValue('depositResponseDto') as DepositResponseDto | null
+      const nowAmount = DepositResponseDto?.nowAmount
+      // const amount = parseFloat(nowAmount)
+      // const formatted = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(amount)
+      return <div>{nowAmount ?? '-'}</div>
     },
   },
   {
-    accessorKey: 'recentConnection',
+    accessorKey: 'lastLoginDate',
     header: '최근 접속',
     cell: ({ row }) => {
       const date = row.getValue('createdAt') as Date

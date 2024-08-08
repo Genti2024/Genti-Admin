@@ -4,7 +4,7 @@ import { onRequest } from '@/lib/api/onRequest'
 import { onResponse } from '@/lib/api/onResponse'
 
 export const axiosInstance = axios.create({
-  baseURL: 'http://ec2-15-165-111-211.ap-northeast-2.compute.amazonaws.com/api/v1/',
+  baseURL: 'https://dev.genti.kr/api/v1/',
   // headers: {
   //   Authorization:
   //     'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3MjE2Mzk2ODQsImV4cCI6MTIxNzIxNjM5Njg0LCJ1c2VySWQiOiIxIiwicm9sZSI6IlJPTEVfQURNSU4sUk9MRV9NQU5BR0VSLFJPTEVfQ1JFQVRPUixST0xFX1VTRVIiLCJ0eXBlIjoiYWNjZXNzIn0.2pPjq16gcovMFnya_piuR6972YeZt4JeKfKcqQspi6p6tBhuTF7OLODaqzrr61Bk0kPD868MoS4ZB9fWIS-D6A',
