@@ -10,7 +10,8 @@ import { Status } from '@/types/admin-order'
 
 const getAdminOrderList = async (page: string, status: Status, email?: string) => {
   const response = await axiosInstance.get<CommonResponse<AdminOrderResponse>>(
-    `admin/picture-generate-requests/admin-matched?page=${page}&size=10&status=${status}&${email ? `&email=${email}` : ''}`,
+    `admin/picture-generate-requests/admin-matched?${email !== '' ? `email=${email}` : ''}`,
+    { params: { page, size: 10, status } },
   )
   return response.data.response
 }
