@@ -7,7 +7,7 @@ import { axiosInstance } from '@/lib/api/axios-instance'
 import { UserInfo } from '@/types/user-info'
 
 const getUserInfoList = async () => {
-  const response = await axiosInstance.get<CommonResponse<UserInfo>>(`/users?role=${'ALL'}&page=0&size=10`)
+  const response = await axiosInstance.get<CommonResponse<UserInfo>>(`admin/users?role=${'ALL'}&page=0&size=10`)
   return response.data
 }
 
