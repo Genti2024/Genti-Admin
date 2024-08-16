@@ -1,12 +1,12 @@
 import { UserInfo, UserRole, UserStatus } from '@/types/user-info'
 
 export interface PostUserStatusReqParams {
-  id: string
+  userId: string
   status: UserStatus
 }
 
 export interface PostUserRoleReqParams {
-  id: string
+  userId: string
   role: UserRole
 }
 

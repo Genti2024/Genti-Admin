@@ -21,12 +21,14 @@ export const getUserColumns = ({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button>
-            <Badge variant="secondary">{row.getValue('userRole') === 'CREATOR' ? '공급자' : '사용자'}</Badge>
+            <Badge variant="secondary">{row.getValue('userRole')}</Badge>
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => handleUserRole(row.original.id, 'CREATOR')}>공급자</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleUserRole(row.original.id, 'USER')}>사용자</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleUserRole(row.original.id.toString(), 'CREATOR')}>
+            공급자
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleUserRole(row.original.id.toString(), 'USER')}>사용자</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),
@@ -35,25 +37,25 @@ export const getUserColumns = ({
   { accessorKey: 'age', header: '나이' },
   { accessorKey: 'gender', header: '성별' },
   {
-    accessorKey: 'status',
+    accessorKey: 'userStatus',
     header: '상태',
     cell: ({ row }) => {
-      const status = row.getValue('status') as UserStatus
+      const status = row.getValue('userStatus') as UserStatus
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button>
-              <Badge variant={status === '활성화' ? 'default' : 'outline'}>
-                {status === '활성화' ? '활성화' : '비활성화'}
+              <Badge variant={status === '활성' ? 'default' : 'outline'}>
+                {status}
                 <ChevronDown className="w-4 h-4 ml-2" />
               </Badge>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => handleUserStatus(String(row.original.id), '활성화')}>
+            <DropdownMenuItem onClick={() => handleUserStatus(String(row.original.id), '활성')}>
               활성화
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleUserStatus(String(row.original.id), '비활성화')}>
+            <DropdownMenuItem onClick={() => handleUserStatus(String(row.original.id), '비활성')}>
               비활성화
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -66,7 +68,7 @@ export const getUserColumns = ({
     header: '가입 일자',
     cell: ({ row }) => {
       const date = row.getValue('createdAt') as Date
-      const formatted = new Intl.DateTimeFormat('ko-KR').format(date)
+      const formatted = new Date(date).toISOString().slice(0, 19).replace('T', ' ')
       return <div>{formatted}</div>
     },
   },
@@ -76,7 +78,7 @@ export const getUserColumns = ({
     cell: ({ row }) => <div className="text-center">{row.getValue('requestTaskCount') ?? '-'}</div>,
   },
   {
-    accessorKey: 'creatorResponseDto',
+    accessorKey: 'completedTaskCount',
     header: '누적 공급 횟수',
     cell: ({ row }) => <div className="text-center">{row.getValue('completedTaskCount') ?? '-'}</div>,
   },
@@ -86,28 +88,32 @@ export const getUserColumns = ({
     cell: ({ row }) => {
       const DepositResponseDto = row.getValue('depositResponseDto') as DepositResponseDto | null
       const totalAmount = DepositResponseDto?.totalAmount
-      // const amount = parseFloat(totalAmount)
-      // const formatted = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(amount)
-      return <div>{totalAmount ?? '-'}</div>
+      const amount = parseFloat(totalAmount?.toString() ?? '-')
+      const formatted = isNaN(amount)
+        ? '-'
+        : new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(amount)
+      return <div>{formatted}</div>
     },
   },
   {
-    accessorKey: 'DepositResponseDto',
+    accessorKey: 'currentAmount',
     header: '현재 보유 금액',
     cell: ({ row }) => {
       const DepositResponseDto = row.getValue('depositResponseDto') as DepositResponseDto | null
       const nowAmount = DepositResponseDto?.nowAmount
-      // const amount = parseFloat(nowAmount)
-      // const formatted = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(amount)
-      return <div>{nowAmount ?? '-'}</div>
+      const amount = parseFloat(nowAmount?.toString() ?? '-')
+      const formatted = isNaN(amount)
+        ? '-'
+        : new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(amount)
+      return <div>{formatted}</div>
     },
   },
   {
     accessorKey: 'lastLoginDate',
     header: '최근 접속',
     cell: ({ row }) => {
-      const date = row.getValue('createdAt') as Date
-      const formatted = new Intl.DateTimeFormat('ko-KR').format(date)
+      const date = row.getValue('lastLoginDate') as Date
+      const formatted = new Date(date).toISOString().slice(0, 19).replace('T', ' ')
       return <div>{formatted}</div>
     },
   },

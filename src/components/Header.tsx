@@ -62,6 +62,9 @@ const Header = () => {
           <p className="text-2xl text-green-500">Genti</p>
           <span className="sr-only">Genti</span>
         </Link>
+        <Button onClick={() => window.open('https://dev.genti.kr/auth/v1/login/oauth2?oauthPlatform=KAKAO')}>
+          로그인
+        </Button>
         <ModeToggle />
       </div>
     </header>

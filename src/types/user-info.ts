@@ -1,6 +1,6 @@
 export type UserRole = 'USER' | 'CREATOR' | 'ADMIN' | 'ALL'
 export type Sex = '남' | '여'
-export type UserStatus = '활성화' | '비활성화'
+export type UserStatus = '활성' | '비활성'
 
 export interface UserInfo {
   id: number

@@ -21,16 +21,16 @@ const UserInfoPage = () => {
   console.log('userInfoList', userInfoList)
 
   const handleUserStatus = useCallback(
-    (id: string, status: UserStatus) => {
-      setUserStatus({ id, status })
-      console.log(id, status)
+    (userId: string, status: UserStatus) => {
+      setUserStatus({ userId, status })
+      console.log(userId, status)
     },
     [setUserStatus],
   )
   const handleUserRole = useCallback(
-    (id: string, role: UserRole) => {
-      setUserRole({ id, role })
-      console.log(id, role)
+    (userId: string, role: UserRole) => {
+      setUserRole({ userId, role })
+      console.log(userId, role)
     },
     [setUserRole],
   )
