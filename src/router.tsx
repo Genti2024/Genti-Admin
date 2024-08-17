@@ -7,6 +7,7 @@ import PresetUploadPage from '@/pages/PresetUploadPage'
 import ProducerOrderPage from '@/pages/ProducerOrderPage'
 import UserInfoPage from '@/pages/UserInfoPage'
 import UserReportPage from '@/pages/UserReportPage'
+import LoginSuccessPage from '@/pages/LoginSuccessPage'
 
 const routes: RouteObject[] = [
   {
@@ -19,6 +20,7 @@ const routes: RouteObject[] = [
       { path: 'user/report', element: <UserReportPage /> },
       { path: 'cache', element: <CacheOutPage /> },
       { path: 'upload/preset', element: <PresetUploadPage /> },
+      { path: 'login/kakao/success', element: <LoginSuccessPage /> },
     ],
   },
 ]
