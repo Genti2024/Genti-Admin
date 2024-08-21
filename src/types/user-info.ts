@@ -1,5 +1,6 @@
-export type UserRole = 'CREATOR' | 'USER'
-export type UserStatus = 'ACTIVATED' | 'DEACTIVATED'
+export type UserRole = 'USER' | 'CREATOR' | 'ADMIN' | 'ALL'
+export type Sex = '남' | '여'
+export type UserStatus = '활성' | '비활성'
 
 export interface UserInfo {
   id: number
@@ -7,14 +8,27 @@ export interface UserInfo {
   userRole: UserRole
   age: number
   sex: string
-  status: UserStatus
+  userStatus: UserStatus
   createdAt: Date
-  orderCount: number | null
-  producedCount: number | null
-  accumulatedBalance: number | null
-  currentBalance: number | null
-  recentConnection: Date
-  creatorResponseDto: null
-  depositResponseDto: null
+  requestTaskCount: number | null
+  //creatorResponseDto: CreatorResponseDto
+  completedTaskCount: number | null
+  depositResponseDto: DepositResponseDto
   lastLoginDate: Date
+}
+
+export interface CreatorResponseDto {
+  creatorId: number
+  workable: boolean
+  bankType: string
+  accountNumber: string
+  accountHolder: string
+  completedTaskCount: number
+}
+
+export interface DepositResponseDto {
+  id: number
+  description: number | null
+  nowAmount: number
+  totalAmount: number
 }
