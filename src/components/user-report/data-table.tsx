@@ -7,20 +7,22 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { ListFilter } from 'lucide-react'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { UserReport } from '@/types/user-report'
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
+interface DataTableProps<TData> {
+  columns: ColumnDef<UserReport>[]
   data: TData[]
+  handlePage: (value: number) => void
+  currentPage: number
+  first: boolean
+  last: boolean
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export const DataTable = memo(({ columns, data, handlePage, first, last, currentPage }: DataTableProps<UserReport>) => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const table = useReactTable({
     data,
@@ -33,35 +35,8 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
       columnFilters,
     },
   })
-
-  const handleStatusFilter = (value: string) => {
-    table.getColumn('reportStatus')?.setFilterValue(value)
-  }
-
   return (
     <div>
-      <div className="flex flex-row items-center gap-4">
-        <div className="flex items-center py-4">
-          <Input
-            placeholder="Filter emails..."
-            value={(table.getColumn('reporterEmail')?.getFilterValue() as string) ?? ''}
-            onChange={event => table.getColumn('reporterEmail')?.setFilterValue(event.target.value)}
-            className="max-w-sm"
-          />
-        </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
-              <ListFilter className="w-4 h-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => handleStatusFilter('')}>모두</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleStatusFilter('RESOLVED')}>해결완료</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleStatusFilter('NOT_RESOLVED')}>해결 전</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
       <div className="border rounded-md">
         <Table>
           <TableHeader>
@@ -77,6 +52,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map(row => (
@@ -97,13 +73,14 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         </Table>
       </div>
       <div className="flex items-center justify-end py-4 space-x-2">
-        <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+        <Button variant="outline" size="sm" onClick={() => handlePage(currentPage - 1)} disabled={first}>
           Previous
         </Button>
-        <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+        <span className="flex items-center justify-center p-1">{currentPage + 1}</span>
+        <Button variant="outline" size="sm" onClick={() => handlePage(currentPage + 1)} disabled={last}>
           Next
         </Button>
       </div>
     </div>
   )
-}
+})

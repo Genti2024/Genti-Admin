@@ -1,8 +1,9 @@
 import { CommonPicture } from '@/types/admin-order'
 
-export type ReportStatus = 'RESOLVED' | 'NOT_RESOLVED'
+export type ReportStatus = 'RESOLVED' | 'NOT_RESOLVED' | 'ALL'
 
-export interface UserReportProps {
+export interface UserReport {
+  id: number
   reportId: number
   reporterEmail: string
   creatorEmail: string
