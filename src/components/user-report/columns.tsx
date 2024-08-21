@@ -4,17 +4,20 @@ import { ChevronDown, FileImage } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { UserReport } from '@/types/user-report'
+import { ReportStatus, UserReport } from '@/types/user-report'
 
-export const userReportColumns: ColumnDef<UserReport>[] = [
+interface UserReportColumnsProps {
+  handleReportStatus: (id: string, status: ReportStatus) => void
+}
+export const getReportColumns = ({ handleReportStatus }: UserReportColumnsProps): ColumnDef<UserReport>[] => [
   {
     accessorKey: 'createdAt',
     header: 'Report 일시',
-    // cell: ({ row }) => {
-    //   const date = row.getValue('reportAt') as Date
-    //   const formatted = new Intl.DateTimeFormat('ko-KR').format(date)
-    //   return <div>{formatted}</div>
-    // },
+    cell: ({ row }) => {
+      const date = row.getValue('createdAt') as Date
+      const formatted = new Date(date).toISOString().slice(0, 19).replace('T', ' ')
+      return <div>{formatted}</div>
+    },
   },
   {
     accessorKey: 'reporterEmail',
@@ -50,8 +53,20 @@ export const userReportColumns: ColumnDef<UserReport>[] = [
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => {}}>해결완료</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => {}}>해결 전</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                handleReportStatus(row.original.id.toString(), 'RESOLVED')
+              }}
+            >
+              해결완료
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                handleReportStatus(row.original.id.toString(), 'NOT_RESOLVED')
+              }}
+            >
+              해결 전
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

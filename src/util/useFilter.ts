@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 
 import { Status } from '@/types/admin-order'
 import { UserRole } from '@/types/user-info'
+import { ReportStatus } from '@/types/user-report'
 
 export const useFilter = () => {
   const [searchParam, setSearchParam] = useSearchParams()
@@ -36,6 +37,14 @@ export const useFilter = () => {
     [searchParam, setSearchParam],
   )
 
+  const handleReportStatusFilter = useCallback(
+    (value: ReportStatus) => {
+      searchParam.set('status', value)
+      setSearchParam(searchParam)
+    },
+    [searchParam, setSearchParam],
+  )
+
   const handleRoleFilter = useCallback(
     (value: UserRole) => {
       searchParam.set('role', value)
@@ -51,5 +60,6 @@ export const useFilter = () => {
     searchParam,
     setSearchParam,
     handleRoleFilter,
+    handleReportStatusFilter,
   }
 }
