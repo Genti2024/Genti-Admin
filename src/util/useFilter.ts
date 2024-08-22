@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import { Status } from '@/types/admin-order'
@@ -6,11 +6,11 @@ import { UserRole } from '@/types/user-info'
 
 export const useFilter = () => {
   const [searchParam, setSearchParam] = useSearchParams()
-  // useEffect(() => {
-  //   searchParam.set('page', '0')
-  //   searchParam.set('email', '')
-  //   setSearchParam(searchParam)
-  // }, [])
+  useEffect(() => {
+    searchParam.set('page', '0')
+    searchParam.set('email', '')
+    setSearchParam(searchParam)
+  }, [])
 
   const handlePage = useCallback(
     (value: number) => {
@@ -22,6 +22,11 @@ export const useFilter = () => {
 
   const handleEmailFilter = useCallback(
     (value: string) => {
+      if (value === '') {
+        searchParam.delete('email')
+        setSearchParam(searchParam)
+        return
+      }
       searchParam.set('email', value)
       setSearchParam(searchParam)
     },

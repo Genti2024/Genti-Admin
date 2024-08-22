@@ -19,7 +19,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
-import { TableBody, TableCell, TableRow } from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { useFiles } from '@/util/useFiles'
 import { useFilter } from '@/util/useFilter'
 
@@ -77,35 +77,22 @@ const AdminOrderPage = memo(() => {
     checked.forEach(id => setAdminInCharge({ adminInCharge: inCharge, pictureGenerateResponseId: id }))
   }, [checked, inCharge, setAdminInCharge])
 
-  if (isFetching)
-    return (
-      <div>hi</div>
-      // <TableBody>
-      //   {Array.from({ length: 10 }).map((_, index) => (
-      //     <TableRow key={index}>
-      //       {Array.from({ length: 11 }).map((_, index) => (
-      //         <TableCell key={index} className="h-10 text-center">
-      //           <Skeleton className="h-5 w-15" />
-      //         </TableCell>
-      //       ))}
-      //     </TableRow>
-      //   ))}
-      // </TableBody>
-    )
+  const handleSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      handleEmailFilter(email)
+    },
+    [email, handleEmailFilter],
+  )
 
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value), [setEmail])
   return (
     <div className="px-20 py-10 mx-auto min-[2000px]:max-w-[80%]">
       <h1 className="mb-5 text-2xl font-semibold">Admin Order</h1>
       <div className="flex flex-row items-center gap-4">
-        <div className="flex items-center py-4">
-          <Input
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            placeholder="Filter emails..."
-            className="max-w-sm"
-            onKeyDown={e => e.key === 'Enter' && handleEmailFilter(email)}
-          />
-        </div>
+        <form className="flex items-center py-4" onSubmit={handleSubmit}>
+          <Input value={email} onChange={handleChange} placeholder="Filter emails..." className="max-w-sm" />
+        </form>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon">
@@ -146,14 +133,30 @@ const AdminOrderPage = memo(() => {
           </DialogContent>
         </Dialog>
       </div>
-      <DataTable
-        columns={columns}
-        data={processedData ?? []}
-        handlePage={handlePage}
-        first={adminOrderList?.first ?? true}
-        last={adminOrderList?.last ?? true}
-        currentPage={adminOrderList?.number ?? 0}
-      />
+      {isFetching ? (
+        <Table>
+          <TableBody>
+            {Array.from({ length: 10 }).map((_, index) => (
+              <TableRow key={index}>
+                {Array.from({ length: 11 }).map((_, index) => (
+                  <TableCell key={index} className="h-10 text-center">
+                    <Skeleton className="h-5 w-15" />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={processedData ?? []}
+          handlePage={handlePage}
+          first={adminOrderList?.first ?? true}
+          last={adminOrderList?.last ?? true}
+          currentPage={adminOrderList?.number ?? 0}
+        />
+      )}
     </div>
   )
 })

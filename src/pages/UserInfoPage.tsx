@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
-import { TableBody, TableCell, TableRow } from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { getUserColumns } from '@/components/user-info/columns'
 import { DataTable } from '@/components/user-info/data-table'
 import { UserRole, UserStatus } from '@/types/user-info'
@@ -46,33 +46,23 @@ const UserInfoPage = () => {
       })),
     [userInfoList],
   )
-  if (isFetching)
-    return (
-      <TableBody>
-        {Array.from({ length: 10 }).map((_, index) => (
-          <TableRow key={index}>
-            {Array.from({ length: 11 }).map((_, index) => (
-              <TableCell key={index} className="h-10 text-center">
-                <Skeleton className="h-5 w-15" />
-              </TableCell>
-            ))}
-          </TableRow>
-        ))}
-      </TableBody>
-    )
+  const handleSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      handleEmailFilter(email)
+    },
+    [email, handleEmailFilter],
+  )
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value), [setEmail])
+
   return (
     <div className="px-20 py-10 mx-auto min-[2000px]:max-w-[85%]">
       <h1 className="mb-5 text-2xl font-semibold">User Info</h1>
       <div className="flex flex-row items-center gap-4">
-        <div className="flex items-center py-4">
-          <Input
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            placeholder="Filter emails..."
-            className="max-w-sm"
-            onKeyDown={e => e.key === 'Enter' && handleEmailFilter(email)}
-          />
-        </div>
+        <form className="flex items-center py-4" onSubmit={handleSubmit}>
+          <Input value={email} onChange={handleChange} placeholder="Filter emails..." className="max-w-sm" />
+        </form>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon">
@@ -86,14 +76,30 @@ const UserInfoPage = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <DataTable
-        columns={columns}
-        data={processedData ?? []}
-        handlePage={handlePage}
-        first={userInfoList?.first ?? true}
-        last={userInfoList?.last ?? true}
-        currentPage={userInfoList?.number ?? 0}
-      />
+      {isFetching ? (
+        <Table>
+          <TableBody>
+            {Array.from({ length: 10 }).map((_, index) => (
+              <TableRow key={index}>
+                {Array.from({ length: 11 }).map((_, index) => (
+                  <TableCell key={index} className="h-10 text-center">
+                    <Skeleton className="h-5 w-15" />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={processedData ?? []}
+          handlePage={handlePage}
+          first={userInfoList?.first ?? true}
+          last={userInfoList?.last ?? true}
+          currentPage={userInfoList?.number ?? 0}
+        />
+      )}
     </div>
   )
 }
