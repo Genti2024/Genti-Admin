@@ -6,11 +6,6 @@ import { UserRole } from '@/types/user-info'
 
 export const useFilter = () => {
   const [searchParam, setSearchParam] = useSearchParams()
-  useEffect(() => {
-    searchParam.set('page', '0')
-    searchParam.set('email', '')
-    setSearchParam(searchParam)
-  }, [])
 
   const handlePage = useCallback(
     (value: number) => {

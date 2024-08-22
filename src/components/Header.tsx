@@ -1,4 +1,5 @@
 import { Menu } from 'lucide-react'
+import { memo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
 import { kakaoLogin } from '@/api/hooks/auth'
@@ -14,7 +15,7 @@ const headerConfig = [
   { to: '/cache', label: 'Cash' },
   { to: '/upload/preset', label: 'Upload Preset' },
 ]
-const Header = () => {
+const Header = memo(() => {
   const location = useLocation().pathname
   const handleLogin = async () => {
     const res = await kakaoLogin()
@@ -72,6 +73,6 @@ const Header = () => {
       </div>
     </header>
   )
-}
+})
 
 export default Header
