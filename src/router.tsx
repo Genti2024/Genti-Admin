@@ -2,6 +2,7 @@ import { RouteObject } from 'react-router-dom'
 
 import AdminOrderPage from '@/pages/AdminOrderPage'
 import CacheOutPage from '@/pages/CacheOutPage'
+import LoginHandlePage from '@/pages/LoginHandlePage'
 import MainLayout from '@/pages/MainLayout'
 import PresetUploadPage from '@/pages/PresetUploadPage'
 import ProducerOrderPage from '@/pages/ProducerOrderPage'
@@ -19,6 +20,7 @@ const routes: RouteObject[] = [
       { path: 'user/report', element: <UserReportPage /> },
       { path: 'cache', element: <CacheOutPage /> },
       { path: 'upload/preset', element: <PresetUploadPage /> },
+      { path: 'login/success/kakao', element: <LoginHandlePage /> },
     ],
   },
 ]

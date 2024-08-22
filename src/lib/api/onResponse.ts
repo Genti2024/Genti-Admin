@@ -5,13 +5,18 @@ import { axiosInstance } from '@/lib/api/axios-instance'
 
 export const onResponse = async (error: AxiosError) => {
   const { config, response } = error
+  console.log(error)
   if (response?.status === 401 && config) {
     const originalConfig = { ...config }
     try {
-      const res = await getNewToken()
       console.log('refreshed:', new Date().toTimeString())
-      originalConfig.headers['Authorization'] = `Bearer ${res}`
-      localStorage.setItem('_auth', res)
+      const res = await getNewToken({
+        accessToken: localStorage.getItem('accessToken')!,
+        refreshToken: localStorage.getItem('refreshToken')!,
+      })
+      originalConfig.headers['Authorization'] = `${res.accessToken}`
+      localStorage.setItem('accessToken', res.accessToken)
+      localStorage.setItem('refreshToken', res.refreshToken)
       return axiosInstance(originalConfig)
     } catch (error) {
       return Promise.reject(error)
