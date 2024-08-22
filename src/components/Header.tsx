@@ -21,6 +21,7 @@ const Header = memo(() => {
     const res = await kakaoLogin()
     window.open(res.response.uri, '_self')
   }
+  const auth = localStorage.getItem('accessToken')
   return (
     <header className="sticky top-0 flex items-center h-16 gap-4 px-4 border-b bg-background md:px-6">
       <nav className="flex-col hidden gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
@@ -68,7 +69,7 @@ const Header = memo(() => {
           <p className="text-2xl text-green-500">Genti</p>
           <span className="sr-only">Genti</span>
         </Link>
-        <Button onClick={() => handleLogin()}>로그인</Button>
+        {!auth && <Button onClick={() => handleLogin()}>로그인</Button>}
         <ModeToggle />
       </div>
     </header>
