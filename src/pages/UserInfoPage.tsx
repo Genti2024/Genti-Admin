@@ -18,19 +18,16 @@ const UserInfoPage = () => {
   const { data: userInfoList, isFetching } = useGetUserInfoList(searchParam)
   const { mutate: setUserRole } = usePostUserRole()
   const { mutate: setUserStatus } = usePostUserStatus()
-  console.log('userInfoList', userInfoList)
 
   const handleUserStatus = useCallback(
     (userId: string, status: UserStatus) => {
       setUserStatus({ userId, status })
-      console.log(userId, status)
     },
     [setUserStatus],
   )
   const handleUserRole = useCallback(
     (userId: string, role: UserRole) => {
       setUserRole({ userId, role })
-      console.log(userId, role)
     },
     [setUserRole],
   )
