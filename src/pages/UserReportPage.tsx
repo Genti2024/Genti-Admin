@@ -17,6 +17,8 @@ const UserReportPage = () => {
   const { searchParam, handlePage, handleEmailFilter, handleReportStatusFilter } = useFilter()
   const { data: userReportList, isFetching } = useGetUserReport(searchParam)
   const { mutate: setReportStatus } = usePostReportStatus()
+  console.log('userReportList', userReportList)
+
   const handleReportStatus = useCallback(
     (reportId: string, status: ReportStatus) => {
       setReportStatus({ reportId, status })
@@ -34,9 +36,6 @@ const UserReportPage = () => {
       })),
     [userReportList],
   )
-
-  console.log(userReportList)
-
   if (isFetching)
     return (
       <TableBody>

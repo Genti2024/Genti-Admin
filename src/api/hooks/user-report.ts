@@ -40,11 +40,12 @@ export const usePostReportStatus = () => {
   const [searchParam] = useSearchParams()
   const page = searchParam.get('page') ?? '0'
   const email = searchParam.get('email')
+  const status = (searchParam.get('status') ?? 'ALL') as ReportStatus
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: postReportStatus,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userReport', page, email] })
+      queryClient.invalidateQueries({ queryKey: ['userReport', page, status, email] })
     },
   })
 }
