@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { ReportStatus, UserReport } from '@/types/user-report'
+import { CommonPicture } from '@/types/admin-order'
 
 interface UserReportColumnsProps {
   handleReportStatus: (id: string, status: ReportStatus) => void
@@ -25,10 +26,11 @@ export const getReportColumns = ({ handleReportStatus }: UserReportColumnsProps)
   },
   { accessorKey: 'creatorEmail', header: '공급자 ID' },
   {
-    accessorKey: 'picture',
+    accessorKey: 'pictureCompleted',
     header: '사용자에게 전달된 사진',
     cell: ({ row }) => {
-      const url = row.getValue('picture') as string
+      const pictureFromServer = (row.getValue('pictureCompleted') as CommonPicture) ?? ''
+      const url = pictureFromServer.url
       return (
         <Button variant="outline" size="default" onClick={() => window.open(url)}>
           <FileImage className="w-4 h-4" />
@@ -41,13 +43,13 @@ export const getReportColumns = ({ handleReportStatus }: UserReportColumnsProps)
     accessorKey: 'reportStatus',
     header: '상태',
     cell: ({ row }) => {
-      const status = row.getValue('reportStatus') as 'RESOLVED' | 'NOT_RESOLVED'
+      const status = row.getValue('reportStatus') as ReportStatus
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button>
               <Badge variant={status === 'RESOLVED' ? 'outline' : 'destructive'}>
-                {status === 'RESOLVED' ? '해결완료' : '해결 전'}
+                {status === 'RESOLVED' ? '해결 완료' : '해결 전'}
                 <ChevronDown className="w-4 h-4 ml-2" />
               </Badge>
             </button>
@@ -55,14 +57,14 @@ export const getReportColumns = ({ handleReportStatus }: UserReportColumnsProps)
           <DropdownMenuContent align="end">
             <DropdownMenuItem
               onClick={() => {
-                handleReportStatus(row.original.id.toString(), 'RESOLVED')
+                handleReportStatus(String(row.original.reportId), 'RESOLVED')
               }}
             >
               해결완료
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
-                handleReportStatus(row.original.id.toString(), 'NOT_RESOLVED')
+                handleReportStatus(String(row.original.reportId), 'NOT_RESOLVED')
               }}
             >
               해결 전
