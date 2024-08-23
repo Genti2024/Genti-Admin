@@ -13,16 +13,14 @@ import { ReportStatus } from '@/types/user-report'
 import { useFilter } from '@/util/useFilter'
 
 const UserReportPage = () => {
-  // const { searchParam, handlePage, handleEmailFilter, handleStatusFilter } = useFilter()
-  // const { data: userReportList, isFetching } = useGetUserReport(searchParam)
   const [email, setEmail] = useState('')
   const { searchParam, handlePage, handleEmailFilter, handleReportStatusFilter } = useFilter()
   const { data: userReportList, isFetching } = useGetUserReport(searchParam)
   const { mutate: setReportStatus } = usePostReportStatus()
   const handleReportStatus = useCallback(
-    (userId: string, status: ReportStatus) => {
-      setReportStatus({ userId, status })
-      console.log(userId, status)
+    (reportId: string, status: ReportStatus) => {
+      setReportStatus({ reportId, status })
+      console.log(reportId, status)
     },
     [setReportStatus],
   )
@@ -75,7 +73,7 @@ const UserReportPage = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => handleReportStatusFilter('ALL')}>모두</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleReportStatusFilter('NOT_RESOLVED')}>해결중</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleReportStatusFilter('NOT_RESOLVED')}>해결 전</DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleReportStatusFilter('RESOLVED')}>해결완료</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

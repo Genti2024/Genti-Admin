@@ -28,8 +28,9 @@ export const useGetUserReport = (searchParam: URLSearchParams) => {
   })
 }
 
-const postReportStatus = async ({ userId, status }: PostReportStatusReqParams) => {
-  const response = await axiosInstance.post<CommonResponse<StatusResponse>>(`/admin/report/${userId}/status`, {
+const postReportStatus = async ({ reportId, status }: PostReportStatusReqParams) => {
+  const response = await axiosInstance.post<CommonResponse<StatusResponse>>(`/admin/reports`, {
+    id: reportId,
     reportStatus: status,
   })
   return response.data.response

@@ -3,7 +3,6 @@ import { CommonPicture } from '@/types/admin-order'
 export type ReportStatus = 'RESOLVED' | 'NOT_RESOLVED' | 'ALL'
 
 export interface UserReport {
-  id: number
   reportId: number
   reporterEmail: string
   creatorEmail: string
