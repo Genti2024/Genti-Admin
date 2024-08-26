@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { CommonResponse, CommonResponseWithPagination } from '@/api/types/generic-response'
+import { CommonResponseWithPagination } from '@/api/types/generic-response'
 import { axiosInstance } from '@/lib/api/axios-instance'
 import { ReportStatus, UserReportProps } from '@/types/user-report'
 

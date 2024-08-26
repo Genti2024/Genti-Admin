@@ -5,8 +5,8 @@ import { userReport } from '@/lib/mocks/user-report'
 import { useFilter } from '@/util/useFilter'
 
 const UserReportPage = () => {
-  const { searchParam, handlePage, handleEmailFilter, handleStatusFilter } = useFilter()
-  const { data: userReportList, isFetching } = useGetUserReport(searchParam)
+  const { searchParam } = useFilter()
+  const { data: userReportList } = useGetUserReport(searchParam)
   console.log(userReportList)
 
   return (

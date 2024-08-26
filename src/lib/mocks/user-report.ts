@@ -1,16 +1,16 @@
-import { UserReport } from '@/types/user-report'
+import { UserReportProps } from '@/types/user-report'
 
-export const userReport: UserReport[] = [
-  {
-    id: 1,
-    reporterEmail: 'sooyoung.park@kakao.com',
-    creatorEmail: 'sooyoung.park@kakao.com',
-    picture: 'https://drive.google.com/file/d/1fmG1-8olC1Io6XF9A5J_rTDvNMPqLDsz/view',
-    content: '주문내용과 전혀 다른 의상을 입고 있습니다',
-    reportStatus: 'RESOLVED',
-    pictureGenerateResponseId: 4,
-    createdAt: '2024-05-19T14:20:16',
-  },
+export const userReport: UserReportProps[] = [
+  // {
+  //   reportId: 1,
+  //   reporterEmail: 'sooyoung.park@kakao.com',
+  //   creatorEmail: 'sooyoung.park@kakao.com',
+  //   picture: 'https://drive.google.com/file/d/1fmG1-8olC1Io6XF9A5J_rTDvNMPqLDsz/view',
+  //   content: '주문내용과 전혀 다른 의상을 입고 있습니다',
+  //   reportStatus: 'RESOLVED',
+  //   pictureGenerateResponseId: 4,
+  //   createdAt: new Date('2024-05-19T14:20:16'),
+  // },
   // {
   //   id: 2,
   //   reporterEmail: 'user@gmail.com',

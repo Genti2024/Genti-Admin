@@ -4,9 +4,9 @@ import { ChevronDown, FileImage } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { UserReport } from '@/types/user-report'
+import { UserReportProps } from '@/types/user-report'
 
-export const userReportColumns: ColumnDef<UserReport>[] = [
+export const userReportColumns: ColumnDef<UserReportProps>[] = [
   {
     accessorKey: 'createdAt',
     header: 'Report 일시',
