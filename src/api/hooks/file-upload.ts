@@ -31,6 +31,13 @@ const postPicture = async ({ pictureGenerateResponseId, s3Key }: PictureUploadRe
   return { response: response.data.response, pictureGenerateResponseId }
 }
 
+const postSubmitPicture = async (pictureGenerateResponseId: number) => {
+  const response = await axiosInstance.post<CommonResponse<null>>(
+    `/admin/picture-generate-responses/${pictureGenerateResponseId}/submit`,
+  )
+  return response.data.success
+}
+
 export const usePictureUpload = () => {
   const [searchParam] = useSearchParams()
   const page = searchParam.get('page') ?? '0'
@@ -40,6 +47,8 @@ export const usePictureUpload = () => {
   return useMutation({
     mutationFn: postPicture,
     onSuccess: data => {
+      postSubmitPicture(data.pictureGenerateResponseId)
+
       queryClient.setQueryData<AdminOrderResponse>(
         ['adminOrder', page, email, status],
         (oldData): AdminOrderResponse => {
