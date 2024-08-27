@@ -31,6 +31,8 @@ const postPicture = async ({ pictureGenerateResponseId, s3Key }: PictureUploadRe
   return { response: response.data.response, pictureGenerateResponseId }
 }
 
+// /pictures api를 통해 사진을 업로드한 이후 /submit api를 실행하여 최종 업로드하는 로직이므로 /submit api 요청 메서드 생성
+// Author : 래리
 const postSubmitPicture = async (pictureGenerateResponseId: number) => {
   const response = await axiosInstance.post<CommonResponse<null>>(
     `/admin/picture-generate-responses/${pictureGenerateResponseId}/submit`,
@@ -47,6 +49,8 @@ export const usePictureUpload = () => {
   return useMutation({
     mutationFn: postPicture,
     onSuccess: data => {
+      // /pictures api 요청이 성공한경우 동기적으로 /submit api 실행하도록 수정
+      // Author : 래리
       postSubmitPicture(data.pictureGenerateResponseId)
 
       queryClient.setQueryData<AdminOrderResponse>(
