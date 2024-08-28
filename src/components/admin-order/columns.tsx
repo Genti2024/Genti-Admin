@@ -49,7 +49,11 @@ export const adminOrderColumns = ({
     header: '주문 일시',
     cell: ({ row }) => {
       const date = row.getValue('createdAt') as Date
-      const formatted = new Date(date).toISOString().slice(0, 19).replace('T', ' ')
+      const formatted = new Date(date).toLocaleDateString('ko-KR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      })
       return <div>{formatted}</div>
     },
   },
@@ -77,20 +81,20 @@ export const adminOrderColumns = ({
     accessorKey: 'pictureRatio',
     header: '요청 사진 비율',
     cell: ({ row }) => {
-      const ratio = row.getValue('pictureRatio');
-      let displayText;
+      const ratio = row.getValue('pictureRatio')
+      let displayText
       if (ratio === 'RATIO_SERO') {
-        displayText = '세로 3:가로 2';
+        displayText = '세로 3:가로 2'
       } else if (ratio === 'RATIO_GARO') {
-        displayText = '세로 2:가로 3';
+        displayText = '세로 2:가로 3'
       } else {
-        displayText = '알 수 없는 비율';  // 예상하지 못한 값이 들어왔을 때 처리
+        displayText = '알 수 없는 비율' // 예상하지 못한 값이 들어왔을 때 처리
       }
       return (
         <div>
           <p>{displayText}</p>
         </div>
-      );
+      )
     },
   },
   {
