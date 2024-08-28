@@ -1,7 +1,7 @@
 import { ReportStatus, UserReport } from '@/types/user-report'
 
 export interface PostReportStatusReqParams {
-  reportId: string
+  reportId: number
   status: ReportStatus
 }
 

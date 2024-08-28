@@ -8,7 +8,7 @@ import { CommonPicture } from '@/types/admin-order'
 import { ReportStatus, UserReport } from '@/types/user-report'
 
 interface UserReportColumnsProps {
-  handleReportStatus: (id: string, status: ReportStatus) => void
+  handleReportStatus: (id: number, status: ReportStatus) => void
 }
 export const getReportColumns = ({
   handleReportStatus: handleReportStatus,
@@ -59,14 +59,14 @@ export const getReportColumns = ({
           <DropdownMenuContent align="end">
             <DropdownMenuItem
               onClick={() => {
-                handleReportStatus(String(row.original.reportId), 'NOT_RESOLVED')
+                handleReportStatus(row.original.reportId, 'NOT_RESOLVED')
               }}
             >
               해결 전
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
-                handleReportStatus(String(row.original.reportId), 'RESOLVED')
+                handleReportStatus(row.original.reportId, 'RESOLVED')
               }}
             >
               해결완료

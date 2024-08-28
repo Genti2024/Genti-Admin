@@ -2,11 +2,10 @@ import { ListFilter } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 
 import { useGetUserReport, usePostReportStatus } from '@/api/hooks/user-report'
+import Suspense from '@/components/Suspense'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
-import { Skeleton } from '@/components/ui/skeleton'
-import { TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { getReportColumns } from '@/components/user-report/columns'
 import { DataTable } from '@/components/user-report/data-table'
 import { ReportStatus } from '@/types/user-report'
@@ -17,53 +16,31 @@ const UserReportPage = () => {
   const { searchParam, handlePage, handleEmailFilter, handleReportStatusFilter } = useFilter()
   const { data: userReportList, isFetching } = useGetUserReport(searchParam)
   const { mutate: setReportStatus } = usePostReportStatus()
-  console.log('userReportList', userReportList)
 
   const handleReportStatus = useCallback(
-    (reportId: string, status: ReportStatus) => {
-      setReportStatus({ reportId, status })
-      console.log(reportId, status)
-    },
+    (reportId: number, status: ReportStatus) => setReportStatus({ reportId, status }),
     [setReportStatus],
   )
 
   const columns = useMemo(() => getReportColumns({ handleReportStatus }), [handleReportStatus])
 
-  const processedData = useMemo(
-    () =>
-      userReportList?.content.map(item => ({
-        ...item,
-      })),
-    [userReportList],
+  const handleSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      handleEmailFilter(email)
+    },
+    [email, handleEmailFilter],
   )
-  if (isFetching)
-    return (
-      <TableBody>
-        {Array.from({ length: 10 }).map((_, index) => (
-          <TableRow key={index}>
-            {Array.from({ length: 11 }).map((_, index) => (
-              <TableCell key={index} className="h-10 text-center">
-                <Skeleton className="h-5 w-15" />
-              </TableCell>
-            ))}
-          </TableRow>
-        ))}
-      </TableBody>
-    )
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value), [setEmail])
 
   return (
     <div className="px-20 py-10 mx-auto min-[2000px]:max-w-[85%]">
       <h1 className="mb-5 text-2xl font-semibold">User Info</h1>
       <div className="flex flex-row items-center gap-4">
-        <div className="flex items-center py-4">
-          <Input
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            placeholder="Filter emails..."
-            className="max-w-sm"
-            onKeyDown={e => e.key === 'Enter' && handleEmailFilter(email)}
-          />
-        </div>
+        <form className="flex items-center py-4" onSubmit={handleSubmit}>
+          <Input value={email} onChange={handleChange} placeholder="Filter emails..." className="max-w-sm" />
+        </form>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon">
@@ -77,22 +54,18 @@ const UserReportPage = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <DataTable
-        columns={columns}
-        data={processedData ?? []}
-        handlePage={handlePage}
-        first={userReportList?.first ?? true}
-        last={userReportList?.last ?? true}
-        currentPage={userReportList?.number ?? 0}
-      />
+      <Suspense isFetching={isFetching}>
+        <DataTable
+          columns={columns}
+          data={userReportList?.content ?? []}
+          handlePage={handlePage}
+          first={userReportList?.first ?? true}
+          last={userReportList?.last ?? true}
+          currentPage={userReportList?.number ?? 0}
+        />
+      </Suspense>
     </div>
   )
-  // return (
-  //   <div className="px-20 py-10 mx-auto min-[2000px]:max-w-[85%]">
-  //     <h1 className="mb-5 text-2xl font-semibold">User Info</h1>
-  //     <DataTable columns={userReportColumns} data={userReport} />
-  //   </div>
-  // )
 }
 
 export default UserReportPage

@@ -33,19 +33,34 @@ const postReportStatus = async ({ reportId, status }: PostReportStatusReqParams)
     id: reportId,
     reportStatus: status,
   })
-  return response.data.response
+  return { response: response.data.response, reportId, status }
 }
 
 export const usePostReportStatus = () => {
   const [searchParam] = useSearchParams()
   const page = searchParam.get('page') ?? '0'
-  const email = searchParam.get('email')
+  const email = searchParam.get('email') ?? ''
   const status = (searchParam.get('status') ?? 'ALL') as ReportStatus
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: postReportStatus,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userReport', page, status, email] })
+    onSuccess: data => {
+      queryClient.setQueryData<UserReportResponse>(
+        ['userReport', page, email, status],
+        (oldData): UserReportResponse => {
+          if (!oldData) {
+            return {} as UserReportResponse
+          }
+          return {
+            ...oldData,
+            content: oldData.content.map(item =>
+              item.reportId === data.reportId
+                ? { ...item, reportStatus: data.status === 'RESOLVED' ? '해결 완료' : '해결 전' }
+                : item,
+            ),
+          }
+        },
+      )
     },
   })
 }
