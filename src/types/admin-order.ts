@@ -1,6 +1,6 @@
 export type Status = 'BEFORE_WORK' | 'IN_PROGRESS' | 'COMPLETED' | 'EXPIRED' | 'ALL'
 
-export type PictureRatio = 'RATIO_3_2' | 'NONE' | 'RATIO_2_3'
+export type PictureRatio = 'RATIO_SERO' | 'NONE' | 'RATIO_GARO'
 type PictureType =
   | 'PictureCompleted'
   | 'PictureCreatedByCreator'
@@ -29,6 +29,7 @@ export interface AdminOrder {
   requesterId: number
   requesterEmail: string
   prompt: string
+  pictureRatio: string,
   promptAdvanced: string
   facePictureList: CommonPicture[] | null
   posePicture: CommonPicture | null

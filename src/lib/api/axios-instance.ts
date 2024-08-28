@@ -4,7 +4,7 @@ import { onRequest } from '@/lib/api/onRequest'
 import { onResponse } from '@/lib/api/onResponse'
 
 export const axiosInstance = axios.create({
-  baseURL: 'https://api.genti.kr/api/v1/',
+  baseURL: 'https://dev.genti.kr/api/v1/',
 })
 
 axiosInstance.interceptors.request.use(onRequest)

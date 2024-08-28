@@ -74,6 +74,26 @@ export const adminOrderColumns = ({
     },
   },
   {
+    accessorKey: 'pictureRatio',
+    header: '요청 사진 비율',
+    cell: ({ row }) => {
+      const ratio = row.getValue('pictureRatio');
+      let displayText;
+      if (ratio === 'RATIO_SERO') {
+        displayText = '세로 3:가로 2';
+      } else if (ratio === 'RATIO_GARO') {
+        displayText = '세로 2:가로 3';
+      } else {
+        displayText = '알 수 없는 비율';  // 예상하지 못한 값이 들어왔을 때 처리
+      }
+      return (
+        <div>
+          <p>{displayText}</p>
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: 'promptAdvanced',
     header: '추천 프롬프트',
     cell: ({ row }) => {

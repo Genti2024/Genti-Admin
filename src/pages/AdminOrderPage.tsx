@@ -59,7 +59,7 @@ const AdminOrderPage = memo(() => {
     () =>
       adminOrderList?.content.map(item => ({
         ...item,
-        prompt: `${item.prompt}\n 카메라 앵글: ${item.cameraAngle} \n 프레임: ${item.shotCoverage} \n 비율: ${item.facePictureList?.map(face => face.pictureRatio).join(', ')}`,
+        prompt: `${item.prompt}\n 카메라 앵글: ${item.cameraAngle} \n 프레임: ${item.shotCoverage}`,
       })),
     [adminOrderList],
   )
