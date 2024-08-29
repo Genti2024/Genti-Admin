@@ -40,7 +40,7 @@ const postSubmitPicture = async (pictureGenerateResponseId: number) => {
   return response.data.success
 }
 
-export const usePictureUpload = () => {
+export const usePictureUpload = (queryKey: string) => {
   const [searchParam] = useSearchParams()
   const page = searchParam.get('page') ?? '0'
   const email = searchParam.get('email') ?? ''
@@ -53,21 +53,18 @@ export const usePictureUpload = () => {
       // Author : 래리
       postSubmitPicture(data.pictureGenerateResponseId)
 
-      queryClient.setQueryData<AdminOrderResponse>(
-        ['adminOrder', page, email, status],
-        (oldData): AdminOrderResponse => {
-          if (!oldData) {
-            return {} as AdminOrderResponse
+      queryClient.setQueryData<AdminOrderResponse>([queryKey, page, email, status], (oldData): AdminOrderResponse => {
+        if (!oldData) {
+          return {} as AdminOrderResponse
+        }
+        const newContent = oldData.content.map(item => {
+          if (item.responseList[0].pictureGenerateResponseId === data.pictureGenerateResponseId) {
+            return { ...item, responseList: [{ ...item.responseList[0], pictureCompletedList: [data.response[0]] }] }
           }
-          const newContent = oldData.content.map(item => {
-            if (item.responseList[0].pictureGenerateResponseId === data.pictureGenerateResponseId) {
-              return { ...item, responseList: [{ ...item.responseList[0], pictureCompletedList: [data.response[0]] }] }
-            }
-            return item
-          })
-          return { ...oldData, content: newContent }
-        },
-      )
+          return item
+        })
+        return { ...oldData, content: newContent }
+      })
     },
   })
 }

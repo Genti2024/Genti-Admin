@@ -3,7 +3,7 @@ import { memo, useCallback, useMemo, useState } from 'react'
 
 import { useGetAdminOrderList, usePostSetAdminInCharge } from '@/api/hooks/admin-order'
 import { useGetFileUrl, usePictureUpload, useS3Upload } from '@/api/hooks/file-upload'
-import { adminOrderColumns } from '@/components/admin-order/columns'
+import { orderColumns } from '@/components/admin-order/columns'
 import { DataTable } from '@/components/admin-order/data-table'
 import { Button } from '@/components/ui/button'
 import {
@@ -34,7 +34,7 @@ const AdminOrderPage = memo(() => {
   const { mutate: setAdminInCharge } = usePostSetAdminInCharge()
   const { mutate: mutateGetFileUrl } = useGetFileUrl()
   const { mutate: mutateS3Upload } = useS3Upload()
-  const { mutate: mutatePostPicture } = usePictureUpload()
+  const { mutate: mutatePostPicture } = usePictureUpload('adminOrder')
 
   const handlePictureUpload = useCallback(
     (file: File, pictureGenerateResponseId: number) => {
@@ -63,6 +63,7 @@ const AdminOrderPage = memo(() => {
       })),
     [adminOrderList],
   )
+  console.log(processedData)
 
   const handleCheckbox = useCallback(
     (id: number) => void setChecked(prev => (prev.includes(id) ? prev.filter(el => el === id) : [...prev, id])),
@@ -70,7 +71,15 @@ const AdminOrderPage = memo(() => {
   )
   const columns = useMemo(
     () =>
-      adminOrderColumns({ handleCheckbox, files, preview, handleFileChange, handleDeleteFile, handlePictureUpload }),
+      orderColumns({
+        handleCheckbox,
+        files,
+        preview,
+        handleFileChange,
+        handleDeleteFile,
+        handlePictureUpload,
+        type: 'admin',
+      }),
     [files, handleCheckbox, handleDeleteFile, handleFileChange, preview, handlePictureUpload],
   )
   const handleAdminInCharge = useCallback(() => {

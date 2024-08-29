@@ -12,22 +12,24 @@ import { Input } from '@/components/ui/input'
 import { AdminOrder, CommonPicture, ResponseList, Status } from '@/types/admin-order'
 import { downloadFile } from '@/util/download'
 
-interface AdminOrderProps {
+interface OrderProps {
   handleCheckbox: (id: number) => void
   files: File[]
   preview: string[]
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>, index: number) => void
   handleDeleteFile: (index: number) => void
   handlePictureUpload: (file: File, pictureGenerateResponseId: number) => void
+  type: 'admin' | 'producer'
 }
-export const adminOrderColumns = ({
+export const orderColumns = ({
   handleCheckbox,
   files,
   preview,
   handleDeleteFile,
   handleFileChange,
   handlePictureUpload,
-}: AdminOrderProps): ColumnDef<AdminOrder>[] => [
+  type,
+}: OrderProps): ColumnDef<AdminOrder>[] => [
   {
     id: 'select',
     header: '',
@@ -61,7 +63,12 @@ export const adminOrderColumns = ({
     accessorKey: 'pictureGenerateRequestId',
     header: '주문넘버',
     cell: ({ row }) => {
-      return <div>A{row.getValue('pictureGenerateRequestId')}</div>
+      return (
+        <div>
+          {type === 'admin' ? 'A' : 'B'}
+          {row.getValue('pictureGenerateRequestId')}
+        </div>
+      )
     },
   },
   { accessorKey: 'requesterEmail', header: 'email' },

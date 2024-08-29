@@ -64,3 +64,21 @@ export const usePostSetAdminInCharge = () => {
     },
   })
 }
+
+const getProducerOrderList = async (page: string, status: Status, email?: string) => {
+  const response = await axiosInstance.get<CommonResponse<AdminOrderResponse>>(
+    `admin/picture-generate-requests/creator-submitted?${email !== '' ? `email=${email}` : ''}`,
+    { params: { page, size: 10, status } },
+  )
+  return response.data.response
+}
+
+export const useGetProducerOrderList = (searchParam: URLSearchParams) => {
+  const page = searchParam.get('page') ?? '0'
+  const email = searchParam.get('email') ?? ''
+  const status = (searchParam.get('status') ?? 'ALL') as Status
+  return useQuery({
+    queryKey: ['producerOrder', page, email, status],
+    queryFn: () => getProducerOrderList(page, status, email),
+  })
+}
