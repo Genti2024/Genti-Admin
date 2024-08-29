@@ -7,7 +7,7 @@ const toDataURL = async (url: string) => {
 export const downloadFile = async (url: string, fileName?: string) => {
   const a = document.createElement('a')
   a.href = await toDataURL(url)
-  const regex = /([^/]+?\.(jpg|jpeg|png|gif|bmp|tiff|webp))/i // 확장자를 포함한 파일 이름 매칭
+  const regex = /([^/]+?\.(heic|jpg|jpeg|png|gif|bmp|tiff|webp))/i // 확장자를 포함한 파일 이름 매칭
   const result = fileName?.match(regex) ?? 'download.png'
   a.download = result[0]
 
