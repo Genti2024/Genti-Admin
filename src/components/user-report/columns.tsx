@@ -4,17 +4,23 @@ import { ChevronDown, FileImage } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { UserReportProps } from '@/types/user-report'
+import { CommonPicture } from '@/types/admin-order'
+import { ReportStatus, UserReport } from '@/types/user-report'
 
-export const userReportColumns: ColumnDef<UserReportProps>[] = [
+interface UserReportColumnsProps {
+  handleReportStatus: (id: number, status: ReportStatus) => void
+}
+export const getReportColumns = ({
+  handleReportStatus: handleReportStatus,
+}: UserReportColumnsProps): ColumnDef<UserReport>[] => [
   {
     accessorKey: 'createdAt',
     header: 'Report 일시',
-    // cell: ({ row }) => {
-    //   const date = row.getValue('reportAt') as Date
-    //   const formatted = new Intl.DateTimeFormat('ko-KR').format(date)
-    //   return <div>{formatted}</div>
-    // },
+    cell: ({ row }) => {
+      const date = row.getValue('createdAt') as Date
+      const formatted = new Date(date).toISOString().slice(0, 19).replace('T', ' ')
+      return <div>{formatted}</div>
+    },
   },
   {
     accessorKey: 'reporterEmail',
@@ -22,10 +28,11 @@ export const userReportColumns: ColumnDef<UserReportProps>[] = [
   },
   { accessorKey: 'creatorEmail', header: '공급자 ID' },
   {
-    accessorKey: 'picture',
+    accessorKey: 'pictureCompleted',
     header: '사용자에게 전달된 사진',
     cell: ({ row }) => {
-      const url = row.getValue('picture') as string
+      const pictureFromServer = (row.getValue('pictureCompleted') as CommonPicture) ?? ''
+      const url = pictureFromServer.url
       return (
         <Button variant="outline" size="default" onClick={() => window.open(url)}>
           <FileImage className="w-4 h-4" />
@@ -38,20 +45,32 @@ export const userReportColumns: ColumnDef<UserReportProps>[] = [
     accessorKey: 'reportStatus',
     header: '상태',
     cell: ({ row }) => {
-      const status = row.getValue('reportStatus') as 'RESOLVED' | 'NOT_RESOLVED'
+      const status = row.getValue('reportStatus')
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button>
-              <Badge variant={status === 'RESOLVED' ? 'outline' : 'destructive'}>
-                {status === 'RESOLVED' ? '해결완료' : '해결 전'}
+              <Badge variant={status === '해결 완료' ? 'outline' : 'destructive'}>
+                {row.getValue('reportStatus')}
                 <ChevronDown className="w-4 h-4 ml-2" />
               </Badge>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => {}}>해결완료</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => {}}>해결 전</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                handleReportStatus(row.original.reportId, 'NOT_RESOLVED')
+              }}
+            >
+              해결 전
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                handleReportStatus(row.original.reportId, 'RESOLVED')
+              }}
+            >
+              해결완료
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
