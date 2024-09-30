@@ -9,6 +9,7 @@ type PictureType =
   | 'PictureProfile'
   | 'PictureUserFace'
   | 'ResponseExampleexport'
+  | 'PictureUserVerification'
 
 export interface CommonPicture {
   id: number
@@ -33,6 +34,7 @@ export interface AdminOrder {
   promptAdvanced: string
   facePictureList: CommonPicture[] | null
   posePicture: CommonPicture | null
+  pictureUserVerification: CommonPicture | null
   cameraAngle: string
   shotCoverage: string
   requestStatus: Status

@@ -67,6 +67,22 @@ export const adminOrderColumns = ({
   { accessorKey: 'requesterEmail', header: 'email' },
   { accessorKey: 'sex', header: '성별' },
   {
+    accessorKey: 'pictureUserVerification',
+    header: '본인 인증 사진',
+    cell: ({ row }) => {
+      const userPic = row.getValue('pictureUserVerification') as CommonPicture | null
+      const handlePicDownload = () => {
+        if (!userPic) return
+        downloadFile(userPic.url, userPic.key)
+      }
+      return (
+        <Button variant="outline" size="default" onClick={handlePicDownload} disabled={!userPic}>
+          <Download className="w-4 h-4" />
+        </Button>
+      )
+    },
+  },
+  {
     accessorKey: 'prompt',
     header: '주문 내용',
     cell: ({ row }) => {
