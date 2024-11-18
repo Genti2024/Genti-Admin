@@ -150,7 +150,7 @@ export const adminOrderColumns = ({
   },
   {
     accessorKey: 'facePictureList',
-    header: '사용자 사진',
+    header: '사용자 사진 6장',
     cell: ({ row }) => {
       const userPic = row.getValue('facePictureList') as CommonPicture[] | null
       const handlePicDownload = () => {
@@ -166,7 +166,6 @@ export const adminOrderColumns = ({
       )
     },
   },
-
   {
     accessorKey: 'responseList',
     header: '상태',

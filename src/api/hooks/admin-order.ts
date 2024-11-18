@@ -26,6 +26,24 @@ export const useGetAdminOrderList = (searchParam: URLSearchParams) => {
   })
 }
 
+const getPaidAdminOrderList = async (page: string, status: Status, email?: string) => {
+  const response = await axiosInstance.get<CommonResponse<AdminOrderResponse>>(
+      `admin/picture-generate-requests/admin-matched?${email !== '' ? `email=${email}` : ''}&paid=true`,
+      { params: { page, size: 10, status } },
+  )
+  return response.data.response
+}
+
+export const useGetPaidAdminOrderList = (searchParam: URLSearchParams) => {
+  const page = searchParam.get('page') ?? '0'
+  const email = searchParam.get('email') ?? ''
+  const status = (searchParam.get('status') ?? 'ALL') as Status
+  return useQuery({
+    queryKey: ['adminOrder', page, email, status],
+    queryFn: () => getPaidAdminOrderList(page, status, email),
+  })
+}
+
 const postSetAdminInCharge = async ({
   adminInCharge,
   pictureGenerateResponseId,

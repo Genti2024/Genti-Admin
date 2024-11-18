@@ -9,7 +9,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
 const headerConfig = [
   { to: '/', label: 'Admin' },
-  { to: '/producer', label: 'Producer' },
+  { to: '/producer', label: 'Admin - 유료' },
   { to: '/user/info', label: 'User Info' },
   { to: '/user/report', label: 'User Report' },
   { to: '/cache', label: 'Cash' },
