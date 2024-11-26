@@ -42,4 +42,5 @@ export interface AdminOrder {
   remainTime: string
   adminInCharge: string
   responseList: ResponseList[]
+  paid: string
 }

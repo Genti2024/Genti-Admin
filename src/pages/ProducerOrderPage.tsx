@@ -3,8 +3,8 @@ import { memo, useCallback, useMemo, useState } from 'react'
 
 import { useGetPaidAdminOrderList, usePostSetAdminInCharge } from '@/api/hooks/admin-order'
 import { useGetFileUrl, usePictureUpload, useS3Upload } from '@/api/hooks/file-upload'
-import { adminOrderColumns } from '@/components/admin-order/columns'
-import { DataTable } from '@/components/admin-order/data-table'
+import { adminOrderColumns } from '@/components/admin-order/columns-paid'
+import { DataTable } from '@/components/admin-order/data-table-paid'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
